@@ -34,17 +34,17 @@ public class RentalCarsController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateRentalCarRequest createRentalCarRequest) throws BusinessException {
+	public Result add(@RequestBody @Valid CreateRentalCarRequest createRentalCarRequest){
 		return this.rentalCarService.add(createRentalCarRequest);
 	}
 	
 	@PutMapping("/update")
-	public Result update(@RequestParam("rentalId") int id,@RequestBody @Valid UpdateRentalCarRequest updateRentalCarRequest) throws BusinessException{
+	public Result update(@RequestParam("rentalId") int id,@RequestBody @Valid UpdateRentalCarRequest updateRentalCarRequest){
 		return this.rentalCarService.update(id,updateRentalCarRequest);
 	}
 	
 	@DeleteMapping("/delete")
-	public Result delete(@RequestParam("rentalId") int id) throws BusinessException{
+	public Result delete(@RequestParam("rentalId") int id){
 		return this.rentalCarService.delete(id);
 	}
 	
@@ -52,13 +52,15 @@ public class RentalCarsController {
 	public DataResult<List<ListRentalCarDto>> getAll() {
 		return this.rentalCarService.getAll();
 	}
+	
 	@GetMapping("/getRentalByCarId/{carId}")
-	DataResult<List<ListRentalCarDto>> getRentalByCarId(@RequestParam("carId") @Valid int carId) throws BusinessException{
+	DataResult<List<ListRentalCarDto>> getRentalByCarId(@RequestParam("carId") @Valid int carId){
 		return this.rentalCarService.getRentalByCarId(carId);
 	}
-	@GetMapping("/getByRentalId/{rentalId}")
-	DataResult<GetRentalCarByIdDto> getByRentalId(@RequestParam("rentalId") @Valid int rentalId) throws BusinessException{
-		return this.rentalCarService.getByRentalId(rentalId);
+	
+	@GetMapping("/getid/{rentalId}")
+	DataResult<GetRentalCarByIdDto> getByRentalId(@RequestParam("rentalId") @Valid int rentalId){
+		return this.rentalCarService.getById(rentalId);
 	}
 	
 	

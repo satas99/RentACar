@@ -1,18 +1,16 @@
-package com.turkcellcamp.rentacar.business.requests.creates;
-
-import javax.validation.constraints.Email;
+package com.turkcellcamp.rentacar.business.dtos.gets;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CreateCorporateCustomerRequest {
+@AllArgsConstructor
+public class GetCorporateCustomerByIdDto {
+	private int corporateCustomerId;
 	private String companyName;
 	private String taxNumber;
-	@Email
 	private String email;
 	private String password;
 }

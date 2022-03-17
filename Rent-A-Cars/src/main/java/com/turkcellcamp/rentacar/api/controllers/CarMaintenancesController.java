@@ -40,31 +40,26 @@ public class CarMaintenancesController {
 	}
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateCarMaintenanceRequest createCarMaintenanceRequest)
-			throws BusinessException {
+	public Result add(@RequestBody @Valid CreateCarMaintenanceRequest createCarMaintenanceRequest){
 		return this.carMaintenanceService.add(createCarMaintenanceRequest);
 	}
 
 	@PutMapping("/update")
-	public Result update(@RequestParam("carMaintenanceId") int id, @RequestBody @Valid UpdateCarMaintenanceRequest updateCarMaintenanceRequest)
-			throws BusinessException {
+	public Result update(@RequestParam("carMaintenanceId") int id, @RequestBody @Valid UpdateCarMaintenanceRequest updateCarMaintenanceRequest){
 		return this.carMaintenanceService.update(id, updateCarMaintenanceRequest);
 	}
 
 	@DeleteMapping("/delete")
-	public Result delete(@RequestParam("carMaintenanceId") int id)
-			throws BusinessException {
+	public Result delete(@RequestParam("carMaintenanceId") int id){
 		return this.carMaintenanceService.delete(id);
 	}
 
 	@GetMapping("/getid/{carMaintenanceId}")
-	public DataResult<GetCarMaintenanceByIdDto> getById(@RequestParam("carMaintenanceId") @Valid int id)
-			throws BusinessException {
+	public DataResult<GetCarMaintenanceByIdDto> getById(@RequestParam("carMaintenanceId") @Valid int id){
 		return this.carMaintenanceService.getById(id);
 	}
 	@GetMapping("/getCarMaintenanceByCarId/{carId}")
-	DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(@RequestParam("carId") @Valid int id)
-			throws BusinessException {
+	DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(@RequestParam("carId") @Valid int id){
 		return this.carMaintenanceService.getCarMaintenanceByCarId(id);
 	}
 }

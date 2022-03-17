@@ -16,11 +16,11 @@ public interface BrandService {
 	
 	DataResult<List<ListBrandDto>> getAll();
 
-	Result add(CreateBrandRequest createBrandRequest) throws BusinessException;
+	Result add(CreateBrandRequest createBrandRequest);
 
 	DataResult<GetBrandByIdDto> getById(int brandId);
 
-	Result update(int id, UpdateBrandRequest updateBrandRequest) throws BusinessException;
+	Result update(int id, UpdateBrandRequest updateBrandRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id);
 }

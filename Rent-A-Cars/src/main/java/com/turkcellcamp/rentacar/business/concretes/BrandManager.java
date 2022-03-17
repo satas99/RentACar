@@ -46,7 +46,7 @@ public class BrandManager implements BrandService {
 	}
 
 	@Override
-	public Result add(CreateBrandRequest createBrandRequest) throws BusinessException {
+	public Result add(CreateBrandRequest createBrandRequest){
 		
 		checkIfBrandName(createBrandRequest.getBrandName());
 		
@@ -71,7 +71,7 @@ public class BrandManager implements BrandService {
 	}
 
 	@Override
-	public Result update(int id, UpdateBrandRequest updateBrandRequest) throws BusinessException {
+	public Result update(int id, UpdateBrandRequest updateBrandRequest){
 		
 		checkIfBrandExists(id);
 		
@@ -85,7 +85,7 @@ public class BrandManager implements BrandService {
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfBrandExists(id);
 		
@@ -95,7 +95,7 @@ public class BrandManager implements BrandService {
 
 	}
 
-	private boolean checkIfBrandName(String brandName) throws BusinessException {
+	private boolean checkIfBrandName(String brandName){
 		
 		if (this.brandDao.getByBrandName(brandName) == null) {
 			return true;
@@ -104,7 +104,7 @@ public class BrandManager implements BrandService {
 
 	}
 
-	private boolean checkIfBrandExists(int brandId) throws BusinessException {
+	private boolean checkIfBrandExists(int brandId){
 		
 		if (this.brandDao.getByBrandId(brandId) != null) {
 			return true;

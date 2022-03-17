@@ -38,11 +38,11 @@ public class InvoicesController {
 	}
 	
 	@PostMapping("/add")
-	Result add(@RequestBody @Valid CreateInvoiceRequest createInvoiceRequest) throws BusinessException{
+	Result add(@RequestBody @Valid CreateInvoiceRequest createInvoiceRequest){
 		return this.invoiceService.add(createInvoiceRequest);
 	}
 	@DeleteMapping("/delete")
-	Result delete(@RequestParam("InvoiceId") int id) throws BusinessException{
+	Result delete(@RequestParam("invoiceId") int id){
 		return this.invoiceService.delete(id);
 	}
 	@GetMapping("/getall")
@@ -50,12 +50,12 @@ public class InvoicesController {
 		return this.invoiceService.getAll();
 	}
 	@PutMapping("/update")
-	Result update(@RequestParam("InvoiceId") int id, @RequestBody UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException{
+	Result update(@RequestParam("invoiceId") int id, @RequestBody UpdateInvoiceRequest updateInvoiceRequest) {
 		return this.invoiceService.update(id, updateInvoiceRequest);
 	}
 	@GetMapping("/getbyid")
-	DataResult<GetInvoiceByIdDto> getByInvoiceId(@RequestParam("InvoiceId") int invoiceId) throws BusinessException{
-		return this.invoiceService.getByInvoiceId(invoiceId);
+	DataResult<GetInvoiceByIdDto> getByInvoiceId(@RequestParam("invoiceId") int invoiceId){
+		return this.invoiceService.getById(invoiceId);
 	}
 	@GetMapping("/getbydate")
 	DataResult<List<ListInvoiceDto>> getByDateOfBetween (@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate finishDate){

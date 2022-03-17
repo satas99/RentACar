@@ -2,19 +2,23 @@ package com.turkcellcamp.rentacar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkcellcamp.rentacar.business.abstracts.CorporateCustomerService;
+import com.turkcellcamp.rentacar.business.dtos.gets.GetCorporateCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCorporateCustomerDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateCorporateCustomerRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateCorporateCustomerRequest;
-import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
@@ -34,17 +38,22 @@ public class CorporateCustomersController {
 	}
 
 	@PostMapping("/add")
-	Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws BusinessException {
+	Result add(@RequestBody @Valid CreateCorporateCustomerRequest createCorporateCustomerRequest){
 		return this.corporateCustomerService.add(createCorporateCustomerRequest);
 	}
 
-	/*
-	 * @PutMapping("/update") Result update(int id, UpdateCorporateCustomerRequest
-	 * updateCorporateCustomerRequest) throws BusinessException { return
-	 * this.corporateCustomerService.update(id, updateCorporateCustomerRequest); }
-	 */
+	@GetMapping("/getid/{corporateCustomerId}")
+	DataResult<GetCorporateCustomerByIdDto> getById(@RequestParam("corporateCustomerId") int id){
+		return this.corporateCustomerService.getById(id);
+	}
+
+	@PutMapping("/update")
+	Result update(@RequestParam("corporateCustomerId") int id,@RequestBody @Valid UpdateCorporateCustomerRequest updateCorporateCustomerRequest){
+		return this.corporateCustomerService.update(id, updateCorporateCustomerRequest);
+	}
+
 	@DeleteMapping("/delete")
-	Result delete(int id) throws BusinessException {
+	Result delete(@RequestParam("corporateCustomerId") int id){
 		return this.corporateCustomerService.delete(id);
 	}
 }

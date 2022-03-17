@@ -2,7 +2,6 @@ package com.turkcellcamp.rentacar.business.requests.updates;
 
 import java.time.LocalDate;
 
-
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -16,5 +15,6 @@ public class UpdateRentalCarRequest {
 	@NotNull
 	private LocalDate returnDate;
 	private int returnCityId;
+	private double returnKilometer;
 
 }

@@ -13,14 +13,14 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 public interface CarMaintenanceService {
 	DataResult<List<ListCarMaintenanceDto>> getAll();
 
-	Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException;
+	Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest);
 
-	Result update(int id,UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException;
+	Result update(int id,UpdateCarMaintenanceRequest updateCarMaintenanceRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id);
 
 	DataResult<GetCarMaintenanceByIdDto> getById(int id);
 	
-	DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(int carMaintenanceId) throws BusinessException;
+	DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(int carMaintenanceId);
 
 }

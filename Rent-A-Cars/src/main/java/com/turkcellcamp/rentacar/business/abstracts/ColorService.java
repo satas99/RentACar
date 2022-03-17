@@ -13,11 +13,11 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 public interface ColorService {
 	DataResult<List<ListColorDto>> getAll();
 
-	Result add(CreateColorRequest createColorRequest) throws BusinessException;
+	Result add(CreateColorRequest createColorRequest);
 
 	DataResult<GetColorByIdDto> getById(int colorId);
 
-	Result update(int id, UpdateColorRequest updateColorRequest) throws BusinessException;
+	Result update(int id, UpdateColorRequest updateColorRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id);
 }

@@ -58,10 +58,12 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	
 	@Transactional
 	@Override
-	public Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)throws BusinessException {
+	public Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
 
 		OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest().map(createOrderedAdditionalServiceRequest, OrderedAdditionalService.class);
-
+		
+		orderedAdditionalService.setOrderedAdditionalServiceId(0);
+		
 		RentalCar rentalCar = checkIfRentalExists(createOrderedAdditionalServiceRequest.getRentalCarId());
 		orderedAdditionalService.setRentalCar(rentalCar);
 
@@ -73,7 +75,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfOrderedAdditionalServiceExists(id);
 
@@ -83,7 +85,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 	
 	@Override
-	public Result update(int id, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest)throws BusinessException {
+	public Result update(int id, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){
 		
 		checkIfOrderedAdditionalServiceExists(id);
 		
@@ -100,7 +102,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(int orderedadditionalServiceId) throws BusinessException {
+	public DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(int orderedadditionalServiceId){
 			
 		OrderedAdditionalService result = this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(orderedadditionalServiceId);
 	
@@ -112,10 +114,19 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		}
 		return new ErrorDataResult<GetOrderedAdditionalServiceByIdDto>("Cannot find an ordered additional service with this Id.");
 	}
-
-	private RentalCar checkIfRentalExists(int id) throws BusinessException {
+	
+	@Override
+	public DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByRentalCarId(int rentalCarId) {
 		
-		GetRentalCarByIdDto getRentalCarByIdDto = this.rentalCarService.getByRentalId(id).getData();
+		List<OrderedAdditionalService> result = this.orderedAdditionalServiceDao.getByRentalCar_rentalCarId(rentalCarId);
+		List<ListOrderedAdditionalServiceDto> response = result.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService, ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
+
+		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, "Success");
+	}
+	
+	private RentalCar checkIfRentalExists(int id){
+		
+		GetRentalCarByIdDto getRentalCarByIdDto = this.rentalCarService.getById(id).getData();
 		
 		if (getRentalCarByIdDto == null) {
 			throw new BusinessException("Cannot find a rented with this Id.");
@@ -124,7 +135,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		return rentalCar;
 	}
 
-	private AdditionalService checkIfAdditionalServiceExists(int id) throws BusinessException {
+	private AdditionalService checkIfAdditionalServiceExists(int id){
 		
 		GetAdditionalServiceByIdDto getAdditionalServiceByIdDto = this.additionalServiceService.getByAdditionalServiceId(id).getData();
 		
@@ -135,7 +146,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		return additionalService;
 	}
 	
-	private boolean checkIfOrderedAdditionalServiceExists(int id) throws BusinessException {
+	private boolean checkIfOrderedAdditionalServiceExists(int id){
 		
 		if(this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(id)!=null) {
 			return true;
@@ -143,7 +154,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		throw new BusinessException("Cannot find an ordered additional service with this Id.");
 	}
 	
-	private void updateOperation(OrderedAdditionalService orderedAdditionalService, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException {
+	private void updateOperation(OrderedAdditionalService orderedAdditionalService, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){
 		
 		AdditionalService additionalService = checkIfAdditionalServiceExists(updateOrderedAdditionalServiceRequest.getAdditionalServiceId());
 		orderedAdditionalService.setAdditionalService(additionalService);
@@ -153,8 +164,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
 		
 	}
-
-
 
 
 }

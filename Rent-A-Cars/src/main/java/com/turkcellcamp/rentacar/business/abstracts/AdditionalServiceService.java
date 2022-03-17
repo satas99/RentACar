@@ -16,11 +16,11 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 public interface AdditionalServiceService {
 	DataResult<List<ListAdditionalServiceDto>> getAll();
 
-	Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException;
+	Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest);
 
-	Result update(int id,UpdateAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException;
+	Result update(int id,UpdateAdditionalServiceRequest updateAdditionalServiceRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id) ;
 	
-	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId) throws BusinessException;
+	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId);
 }

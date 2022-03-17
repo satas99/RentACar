@@ -47,11 +47,11 @@ public class ColorManager implements ColorService {
 	}
 
 	@Override
-	public Result add(CreateColorRequest createColorRequest) throws BusinessException {
+	public Result add(CreateColorRequest createColorRequest){
 		
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
 		
-		checkIfColorName(color.getColorName());
+		checkIfColorNameExists(color.getColorName());
 		
 		this.colorDao.save(color);
 		
@@ -73,11 +73,11 @@ public class ColorManager implements ColorService {
 	}
 
 	@Override
-	public Result update(int id, UpdateColorRequest updateColorRequest) throws BusinessException {
+	public Result update(int id, UpdateColorRequest updateColorRequest){
 		
 		checkIfColorExists(id);
 		
-		checkIfColorName(updateColorRequest.getColorName());
+		checkIfColorNameExists(updateColorRequest.getColorName());
 		
 		Color color = this.colorDao.getByColorId(id);
 		updateOperation(color, updateColorRequest);
@@ -88,7 +88,7 @@ public class ColorManager implements ColorService {
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfColorExists(id);
 		
@@ -98,7 +98,7 @@ public class ColorManager implements ColorService {
 
 	}
 
-	private boolean checkIfColorName(String colorName) throws BusinessException {
+	private boolean checkIfColorNameExists(String colorName){
 		
 		if (this.colorDao.getByColorName(colorName) == null) {
 			return true;
@@ -107,7 +107,7 @@ public class ColorManager implements ColorService {
 
 	}
 
-	private boolean checkIfColorExists(int colorId) throws BusinessException {
+	private boolean checkIfColorExists(int colorId){
 		
 		if (this.colorDao.getByColorId(colorId) != null) {
 			return true;

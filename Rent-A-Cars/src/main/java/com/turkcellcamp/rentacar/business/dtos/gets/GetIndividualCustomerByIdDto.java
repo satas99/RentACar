@@ -1,14 +1,13 @@
-package com.turkcellcamp.rentacar.business.dtos.lists;
-
+package com.turkcellcamp.rentacar.business.dtos.gets;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ListIndividualCustomerDto {
+@AllArgsConstructor
+public class GetIndividualCustomerByIdDto {
 	private int individualCustomerId;
 	private String firstName;
 	private String lastName;

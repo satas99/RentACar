@@ -40,22 +40,22 @@ public class CarsController {
 	}
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest) throws BusinessException {
+	public Result add(@RequestBody @Valid CreateCarRequest createCarRequest){
 		return this.carService.add(createCarRequest);
 	}
 	
 	@PutMapping("/update")
-	public Result update(@RequestParam("carId") int id, @RequestBody @Valid UpdateCarRequest updateCarRequest) throws BusinessException{
+	public Result update(@RequestParam("carId") int id, @RequestBody @Valid UpdateCarRequest updateCarRequest){
 		return this.carService.update(id, updateCarRequest );
 	}
 	
 	@DeleteMapping("/delete")
-	public Result delete(@RequestParam("carId") int id) throws BusinessException{
+	public Result delete(@RequestParam("carId") int id){
 		return this.carService.delete(id);
 	}
 	
 	@GetMapping("/getbyid/{carId}")
-	public DataResult<GetCarByIdDto> getById(@RequestParam("carId") int carId) throws BusinessException {
+	public DataResult<GetCarByIdDto> getById(@RequestParam("carId") int carId){
 		return this.carService.getById(carId);
 	}
 	

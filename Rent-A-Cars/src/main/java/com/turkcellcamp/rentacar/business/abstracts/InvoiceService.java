@@ -13,15 +13,15 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
 public interface InvoiceService {
 	
-	Result add(CreateInvoiceRequest createInvoiceRequest) throws BusinessException;
+	Result add(CreateInvoiceRequest createInvoiceRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id);
 
 	DataResult<List<ListInvoiceDto>> getAll();
 	
-	Result update(int id,UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException;
+	Result update(int id,UpdateInvoiceRequest updateInvoiceRequest);
 
-	DataResult<GetInvoiceByIdDto> getByInvoiceId(int invoiceId) throws BusinessException;
+	DataResult<GetInvoiceByIdDto> getById(int invoiceId);
 	
 	DataResult<List<ListInvoiceDto>> getByDateOfBetween (LocalDate startDate, LocalDate finishDate);
 	

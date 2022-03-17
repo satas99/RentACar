@@ -1,7 +1,6 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.turkcellcamp.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetAdditionalServiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListAdditionalServiceDto;
-import com.turkcellcamp.rentacar.business.dtos.lists.ListBrandDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
@@ -22,10 +20,10 @@ import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
 import com.turkcellcamp.rentacar.dataaccess.abstracts.AdditionalServiceDao;
 import com.turkcellcamp.rentacar.entities.concretes.AdditionalService;
-import com.turkcellcamp.rentacar.entities.concretes.Brand;
 
 @Service
 public class AdditionalServiceManager implements AdditionalServiceService {
+	
 	private final AdditionalServiceDao additionalServiceDao;
 	private final ModelMapperService modelMapperService;
 
@@ -47,7 +45,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 	}
 
 	@Override
-	public Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
+	public Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest){
 
 		AdditionalService additionalService = this.modelMapperService.forRequest().map(createAdditionalServiceRequest,AdditionalService.class);
 		this.additionalServiceDao.save(additionalService);
@@ -56,7 +54,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 	}
 
 	@Override
-	public Result update(int id, UpdateAdditionalServiceRequest updateAdditionalServiceRequest)throws BusinessException {
+	public Result update(int id, UpdateAdditionalServiceRequest updateAdditionalServiceRequest){
 		
 		checkIfAdditionalServiceExists(id);
 		
@@ -68,7 +66,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfAdditionalServiceExists(id);
 		
@@ -78,7 +76,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 	}
 	
 	@Override
-	public DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId) throws BusinessException {
+	public DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId){
 		
 		var result = this.additionalServiceDao.getByAdditionalServiceId(additionalServiceId);
 		
@@ -96,7 +94,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 		additionalService.setDailyPrice(updateAdditionalServiceRequest.getDailyPrice());
 	}
 
-	private boolean checkIfAdditionalServiceExists(int id) throws BusinessException {
+	private boolean checkIfAdditionalServiceExists(int id){
 		
 		if (this.additionalServiceDao.getByAdditionalServiceId(id) != null) {
 			return true;

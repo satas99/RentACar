@@ -42,20 +42,20 @@ public class AdditionalServicesController {
 
 
     @PostMapping("/add")
-    public Result add(@RequestBody @Valid CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
+    public Result add(@RequestBody @Valid CreateAdditionalServiceRequest createAdditionalServiceRequest){
         return this.additionalServiceService.add(createAdditionalServiceRequest);
     }
 	@PutMapping("/update")
-	Result update(@RequestParam("additionalServiceId") int id, @RequestBody @Valid UpdateAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException{
+	Result update(@RequestParam("additionalServiceId") int id, @RequestBody @Valid UpdateAdditionalServiceRequest updateAdditionalServiceRequest){
 		return this.additionalServiceService.update(id, updateAdditionalServiceRequest);
 	}
 	
 	@DeleteMapping("/delete")
-	Result delete(@RequestParam("additionalServiceId") int id) throws BusinessException{
+	Result delete(@RequestParam("additionalServiceId") int id){
 		return this.additionalServiceService.delete(id);
 	}
 	@GetMapping("/getid/{additionalServiceId}")
-	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(@RequestParam("additionalServiceId") @Valid int additionalServiceId) throws BusinessException{
+	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(@RequestParam("additionalServiceId") @Valid int additionalServiceId){
 		return this.additionalServiceService.getByAdditionalServiceId(additionalServiceId);
 	}
 }

@@ -47,7 +47,7 @@ public class CarManager implements CarService {
 	}
 
 	@Override
-	public Result add(CreateCarRequest createCarRequest) throws BusinessException {
+	public Result add(CreateCarRequest createCarRequest){
 
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		
@@ -61,7 +61,7 @@ public class CarManager implements CarService {
 	}
 
 	@Override
-	public Result update(int id, UpdateCarRequest updateCarRequest) throws BusinessException {
+	public Result update(int id, UpdateCarRequest updateCarRequest){
 		
 		checkIfCarExists(id);
 		
@@ -80,7 +80,7 @@ public class CarManager implements CarService {
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfCarExists(id);
 		
@@ -101,7 +101,7 @@ public class CarManager implements CarService {
 	}
 
 	@Override
-	public DataResult<GetCarByIdDto> getById(int carId) throws BusinessException {
+	public DataResult<GetCarByIdDto> getById(int carId){
 		
 		Car result = this.carDao.getByCarId(carId);
 		
@@ -146,7 +146,7 @@ public class CarManager implements CarService {
 		return new SuccessDataResult<List<ListCarDto>>(response);
 	}
 
-	public boolean checkIfCarExists(int carId) throws BusinessException {
+	public boolean checkIfCarExists(int carId){
 		
 		if (this.carDao.getByCarId(carId) == null) {
 			throw new BusinessException("Cannot find a car with this Id.");
@@ -155,7 +155,7 @@ public class CarManager implements CarService {
 		}
 	}
 
-	private boolean checkIfBrandExists(int id) throws BusinessException {
+	private boolean checkIfBrandExists(int id) {
 		
 		DataResult<GetBrandByIdDto> result = this.brandService.getById(id);
 		
@@ -165,7 +165,7 @@ public class CarManager implements CarService {
 		return true;
 	}
 
-	private boolean checkIfColorExists(int id) throws BusinessException {
+	private boolean checkIfColorExists(int id){
 		
 		DataResult<GetColorByIdDto> result = this.colorService.getById(id);
 		
@@ -181,4 +181,5 @@ public class CarManager implements CarService {
 		car.setDescription(updateCarRequest.getDescription());
 
 	}
+	
 }

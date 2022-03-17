@@ -12,10 +12,15 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
 public interface RentalCarService {
 
-	Result add(CreateRentalCarRequest createRentalCarRequest) throws BusinessException;
-	Result update(int id,UpdateRentalCarRequest updateRentalCarRequest) throws BusinessException;
-	Result delete(int id) throws BusinessException;
-	DataResult <List<ListRentalCarDto>> getAll();
-	DataResult<List<ListRentalCarDto>> getRentalByCarId(int carId) throws BusinessException;
-	DataResult<GetRentalCarByIdDto> getByRentalId(int rentalCarId) throws BusinessException;
+	Result add(CreateRentalCarRequest createRentalCarRequest);
+
+	Result update(int id, UpdateRentalCarRequest updateRentalCarRequest);
+
+	Result delete(int id);
+
+	DataResult<List<ListRentalCarDto>> getAll();
+
+	DataResult<List<ListRentalCarDto>> getRentalByCarId(int carId);
+
+	DataResult<GetRentalCarByIdDto> getById(int rentalCarId);
 }

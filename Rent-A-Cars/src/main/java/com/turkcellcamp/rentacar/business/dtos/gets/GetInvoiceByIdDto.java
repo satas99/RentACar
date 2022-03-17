@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class GetInvoiceByIdDto {
 	private int invoiceId;
 
-	private long invoiceNo;
+	private String invoiceNo;
 
 	private LocalDate createDate;
 

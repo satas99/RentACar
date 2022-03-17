@@ -14,13 +14,13 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 public interface CarService {
 	DataResult<List<ListCarDto>> getAll();
 
-	Result add(CreateCarRequest createCarRequest) throws BusinessException;
+	Result add(CreateCarRequest createCarRequest);
 
-	DataResult<GetCarByIdDto> getById(int carId) throws BusinessException;
+	DataResult<GetCarByIdDto> getById(int carId);
 
-	Result update(int id, UpdateCarRequest updateCarRequest) throws BusinessException;
+	Result update(int id, UpdateCarRequest updateCarRequest);
 
-	Result delete(int id) throws BusinessException;
+	Result delete(int id);
 
 	DataResult<List<GetCarByDailyPriceDto>> getCarByDailyPrice(double dailyPrice);
 

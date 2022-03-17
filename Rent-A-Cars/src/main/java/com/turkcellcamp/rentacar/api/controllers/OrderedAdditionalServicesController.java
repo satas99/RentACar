@@ -18,12 +18,10 @@ import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceServ
 import com.turkcellcamp.rentacar.business.dtos.gets.GetOrderedAdditionalServiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListOrderedAdditionalServiceDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateOrderedAdditionalServiceRequest;
-import com.turkcellcamp.rentacar.business.requests.updates.UpdateAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateOrderedAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
-import com.turkcellcamp.rentacar.entities.concretes.OrderedAdditionalService;
 
 @RestController
 @RequestMapping("/api/orderedAdditionals")
@@ -42,24 +40,28 @@ public class OrderedAdditionalServicesController {
 	}
 
 	@PostMapping("/add")
-	Result add(@RequestBody CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
-			throws BusinessException {
+	Result add(@RequestBody CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
 		return this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
 	}
 
 	@DeleteMapping("/delete")
-	Result delete(@RequestParam("orderedAdditionalServiceId") int id) throws BusinessException {
+	Result delete(@RequestParam("orderedAdditionalServiceId") int id){
 		return this.orderedAdditionalServiceService.delete(id);
 	}
 	
 	@PutMapping("/update")
-	Result update(@RequestParam("orderedAdditionalServiceId") int id, @RequestBody @Valid UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException{
+	Result update(@RequestParam("orderedAdditionalServiceId") int id, @RequestBody @Valid UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){
 		return this.orderedAdditionalServiceService.update(id, updateOrderedAdditionalServiceRequest);
 	}
 	
 	@GetMapping("/getid/{orderedAdditionalServiceId}")
-	DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(@RequestParam("orderedAdditionalServiceId") int orderedadditionalServiceId) throws BusinessException{
+	DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(@RequestParam("orderedAdditionalServiceId") int orderedadditionalServiceId){
 		return this.orderedAdditionalServiceService.getByOrderedAdditionalServiceId(orderedadditionalServiceId);
+	}
+	@GetMapping("/getOrderedAdditionalServiceByRentalCarId/{rentalCarId}")
+	DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByRentalCarId(@RequestParam("rentalCarId") int rentalCarId){
+		return this.orderedAdditionalServiceService.getOrderedAdditionalServiceByRentalCarId(rentalCarId);
+		
 	}
 
 }

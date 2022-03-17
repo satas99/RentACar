@@ -13,6 +13,8 @@ public class GetRentalCarByIdDto {
 	private LocalDate rentDate;
 	private LocalDate returnDate;
 	private double totalDailyPrice;
+    private double startingKilometer;
+    private double returnKilometer;
 	private int rentCityId;
 	private int returnCityId;
 	private int carId;

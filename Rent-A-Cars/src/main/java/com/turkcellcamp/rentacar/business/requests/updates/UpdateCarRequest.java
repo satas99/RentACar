@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class UpdateCarRequest {
 	private double dailyPrice;
 	private String description;
+	private double kilometerInfo;
 
 }

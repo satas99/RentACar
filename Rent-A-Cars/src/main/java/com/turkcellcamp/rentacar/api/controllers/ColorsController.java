@@ -39,22 +39,22 @@ public class ColorsController {
 	}
 
 	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateColorRequest createColorRequest) throws BusinessException {
+	public Result add(@RequestBody @Valid CreateColorRequest createColorRequest){
 		return this.colorService.add(createColorRequest);
 	}
 
 	@PutMapping("/update")
-	public Result update(@RequestParam("colorId") int id, @RequestBody @Valid UpdateColorRequest updateColorRequest) throws BusinessException {
+	public Result update(@RequestParam("colorId") int id, @RequestBody @Valid UpdateColorRequest updateColorRequest){
 		return this.colorService.update(id, updateColorRequest);
 	}
 
 	@DeleteMapping("/delete")
-	public Result delete(@RequestParam("colorId") int id) throws BusinessException {
+	public Result delete(@RequestParam("colorId") int id){
 		return this.colorService.delete(id);
 	}
 
 	@GetMapping("/getid/{colorId}")
-	public DataResult<GetColorByIdDto> getById(@RequestParam("colorId") @Valid int colorId) throws BusinessException {
+	public DataResult<GetColorByIdDto> getById(@RequestParam("colorId") @Valid int colorId){
 		return this.colorService.getById(colorId);
 	}
 

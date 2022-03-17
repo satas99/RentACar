@@ -1,5 +1,7 @@
 package com.turkcellcamp.rentacar.business.requests.updates;
 
+import javax.validation.constraints.Email;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class UpdateCorporateCustomerRequest {
 	private String companyName;
 	private String taxNumber;
-	private String email;
+	@Email
+	private String email;	
 	private String password;
 }

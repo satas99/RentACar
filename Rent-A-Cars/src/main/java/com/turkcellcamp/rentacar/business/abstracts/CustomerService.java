@@ -7,5 +7,5 @@ import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
 
 public interface CustomerService {
 
-	DataResult<GetCustomerByIdDto> getById(int id) throws BusinessException;
+	DataResult<GetCustomerByIdDto> getById(int id);
 }

@@ -49,13 +49,13 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 				carMaintenance -> this.modelMapperService.forDto().map(carMaintenance, ListCarMaintenanceDto.class))
 				.collect(Collectors.toList());
 		
-		response = carCorrection(response, result);
+		response = idCorrection(response, result);
 		
 		return new SuccessDataResult<List<ListCarMaintenanceDto>>(response);
 	}
 
 	@Override
-	public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+	public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest){
 		
 		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest,CarMaintenance.class);
 
@@ -73,7 +73,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 	}
 
 	@Override
-	public Result update(int id, UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException {
+	public Result update(int id, UpdateCarMaintenanceRequest updateCarMaintenanceRequest){
 		
 		checkIfCarMaintenanceExists(id);
 		
@@ -110,24 +110,20 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 	}
 
 	@Override
-	public DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(int id) throws BusinessException {
-		List<CarMaintenance> result = this.carMaintenanceDao.getByCar_carId(id);
+	public DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(int id){
 		
-		if (checkIfCarExists(id) && !result.isEmpty()) {
+		List<CarMaintenance> result = this.carMaintenanceDao.getByCar_carId(id);
 			
 			List<ListCarMaintenanceDto> response = result.stream().map(
 					carMaintenance -> this.modelMapperService.forDto().map(carMaintenance, ListCarMaintenanceDto.class))
 					.collect(Collectors.toList());
 			
-			response = carCorrection(response, result);
+			response = idCorrection(response, result);
 			
 			return new SuccessDataResult<List<ListCarMaintenanceDto>>(response, "Success");
-		}
-		return new ErrorDataResult<List<ListCarMaintenanceDto>>(
-				"The car with this id does not car maintenance exist..");
 	}
 
-	private boolean checkIfCarExists(int id) throws BusinessException {
+	private boolean checkIfCarExists(int id){
 		
 		DataResult<GetCarByIdDto> result = this.carService.getById(id);
 		
@@ -137,7 +133,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 		return true;
 	}
 
-	private boolean checkIfCarMaintenanceExists(int id) throws BusinessException {
+	private boolean checkIfCarMaintenanceExists(int id){
 		
 		if (this.carMaintenanceDao.getByCarMaintenanceId(id) == null) {
 			throw new BusinessException("The car maintenance with this id does not exist..");
@@ -152,7 +148,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 
 	}
 
-	private boolean checkIfRentalCarExists(CarMaintenance carMaintenance) throws BusinessException {
+	private boolean checkIfRentalCarExists(CarMaintenance carMaintenance){
 		
 		DataResult<List<ListRentalCarDto>> result = this.rentalCarService.getRentalByCarId(carMaintenance.getCar().getCarId());
 
@@ -169,7 +165,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 		return true;
 	}
 
-	private boolean checkMaintenanceIfCarExists(int id) throws BusinessException {
+	private boolean checkMaintenanceIfCarExists(int id){
 		
 		List<CarMaintenance> result = this.carMaintenanceDao.getByCar_carId(id);
 		
@@ -186,7 +182,7 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 
 	}
 
-	private List<ListCarMaintenanceDto> carCorrection(List<ListCarMaintenanceDto> response, List<CarMaintenance> result) {
+	private List<ListCarMaintenanceDto> idCorrection(List<ListCarMaintenanceDto> response, List<CarMaintenance> result) {
 		
 		for (int i = 0; i < result.size(); i++) {
 			for (ListCarMaintenanceDto listCarMaintenanceDt : response) {
