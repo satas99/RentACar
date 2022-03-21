@@ -38,12 +38,12 @@ public class RentalCar {
 
 	@Column(name = "total_daily_price")
 	private double totalPrice;
-	
-    @Column(name = "starting_kilometer")
-    private double startingKilometer;
 
-    @Column(name = "return_kilometer")
-    private double returnKilometer;
+	@Column(name = "starting_kilometer")
+	private double startingKilometer;
+
+	@Column(name = "return_kilometer")
+	private double returnKilometer;
 
 	@ManyToOne
 	@JoinColumn(name = "rent_city_id")
@@ -63,7 +63,7 @@ public class RentalCar {
 
 	@OneToMany(mappedBy = "rentalCar")
 	private List<OrderedAdditionalService> orderedAdditionalService;
-	
+
 	@OneToOne(mappedBy = "rentalCar")
 	private Invoice invoice;
 }

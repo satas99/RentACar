@@ -53,7 +53,7 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public Result add(CreateInvoiceRequest createInvoiceRequest) throws BusinessException {
+	public Result add(CreateInvoiceRequest createInvoiceRequest){
 
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		
@@ -77,7 +77,7 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public Result delete(int id) throws BusinessException {
+	public Result delete(int id){
 		
 		checkIfInvoiceExists(id);
 		
@@ -100,7 +100,7 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public Result update(int id, UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException {
+	public Result update(int id, UpdateInvoiceRequest updateInvoiceRequest){
 		
 		checkIfInvoiceExists(id);
 
@@ -112,7 +112,7 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public DataResult<GetInvoiceByIdDto> getById(int invoiceId) throws BusinessException {
+	public DataResult<GetInvoiceByIdDto> getById(int invoiceId){
 
 		Invoice result = checkIfInvoiceExists(invoiceId);
 		

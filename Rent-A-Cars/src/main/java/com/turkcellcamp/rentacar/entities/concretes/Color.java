@@ -29,6 +29,6 @@ public class Color {
 	@Column(name="color_name")
 	private String colorName;
 	
-	@OneToMany(mappedBy="color",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="color")
 	private List<Car> cars;
 }
