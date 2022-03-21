@@ -2,6 +2,8 @@ package com.turkcellcamp.rentacar.business.requests.creates;
 
 import javax.validation.constraints.NotNull;
 
+import com.turkcellcamp.rentacar.entities.concretes.CreditCard;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,19 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreatePaymentRequest {
 	
-	
-	@NotNull
-	private String cardOwnerName;
-	
-	@NotNull
-	private String cardNumber;
-	
-	@NotNull
-	private int cardCvvNumber;
-	
 	@NotNull
 	private int invoiceId;
 	
 	@NotNull
 	private int orderedAdditionalServiceId;
+	
+	@NotNull
+	private CreateCreditCardRequest createCreditCard;
 }

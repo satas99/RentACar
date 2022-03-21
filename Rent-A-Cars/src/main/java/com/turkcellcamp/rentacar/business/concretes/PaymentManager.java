@@ -1,13 +1,18 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import com.turkcellcamp.rentacar.business.abstracts.CarService;
+import com.turkcellcamp.rentacar.business.abstracts.CreditCardService;
 import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
 import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.PaymentService;
@@ -15,6 +20,7 @@ import com.turkcellcamp.rentacar.business.abstracts.PosService;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetInvoiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetPaymentByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListPaymentDto;
+import com.turkcellcamp.rentacar.business.requests.creates.CreateCreditCardRequest;
 import com.turkcellcamp.rentacar.business.requests.creates.CreatePaymentRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
@@ -23,6 +29,7 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
 import com.turkcellcamp.rentacar.dataaccess.abstracts.PaymentDao;
+import com.turkcellcamp.rentacar.entities.concretes.CreditCard;
 import com.turkcellcamp.rentacar.entities.concretes.Invoice;
 import com.turkcellcamp.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcellcamp.rentacar.entities.concretes.Payment;
@@ -35,14 +42,16 @@ public class PaymentManager implements PaymentService {
 	private InvoiceService invoiceService;
 	private OrderedAdditionalServiceService orderedAdditionalServiceService;
 	private PosService posService;
+	private CreditCardService creditCardService;
 
 	@Autowired
-	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService,InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService) {
+	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService,InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService, CreditCardService creditCardService) {
 		this.paymentDao = paymentDao;
 		this.modelMapperService = modelMapperService;
 		this.invoiceService = invoiceService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 		this.posService = posService;
+		this.creditCardService = creditCardService;
 	}
 
 	@Override
@@ -58,7 +67,7 @@ public class PaymentManager implements PaymentService {
 	}
 
 	@Override
-	public Result add(CreatePaymentRequest createPaymentRequest) {
+	public Result add(boolean rememberMe,CreatePaymentRequest createPaymentRequest) {
 	
 		checkIfInvoiceExists(createPaymentRequest.getInvoiceId());
 		
@@ -68,10 +77,16 @@ public class PaymentManager implements PaymentService {
 		
 		checkPaymentOrderedAdditionalServiceExists(createPaymentRequest.getOrderedAdditionalServiceId());
 		
-		this.posService.payments(createPaymentRequest.getCardOwnerName(), createPaymentRequest.getCardNumber(), createPaymentRequest.getCardCvvNumber());
-
+		this.posService.payments(createPaymentRequest.getCreateCreditCard().getCardOwnerName(), createPaymentRequest.getCreateCreditCard().getCardNumber(), createPaymentRequest.getCreateCreditCard().getCardCvvNumber());
+		
+		saveCreditCard(rememberMe, createPaymentRequest.getCreateCreditCard());
+		
 		Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
 		
+		payment.setPaymentId(0);
+		
+		payment.setCreditCard(setCreditCardCorrection(payment, createPaymentRequest.getCreateCreditCard()));
+
 		this.paymentDao.save(payment);
 
 		return new SuccessResult("Payment.Added ");
@@ -131,6 +146,17 @@ public class PaymentManager implements PaymentService {
 		if(this.paymentDao.getByOrderedAdditionalService_orderedAdditionalServiceId(id)!=null) {
 			throw new BusinessException("There is an ordered additional service with this payment id");
 		}
+	}
+	
+
+	private void saveCreditCard(boolean rememberMe, CreateCreditCardRequest creditCard) {
+		if(rememberMe) {
+			creditCardService.add(creditCard);
+		}
+	}
+	private CreditCard setCreditCardCorrection(Payment payment, CreateCreditCardRequest createCreditCardRequest) {
+		CreditCard creditCard = this.modelMapperService.forRequest().map(createCreditCardRequest, CreditCard.class);
+		return creditCard;
 	}
 	
 

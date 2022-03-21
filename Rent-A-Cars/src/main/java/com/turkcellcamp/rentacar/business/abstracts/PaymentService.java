@@ -12,7 +12,7 @@ public interface PaymentService {
 	
 	DataResult<List<ListPaymentDto>> getAll();
 
-	Result add(CreatePaymentRequest createPaymentRequest);
+	Result add(boolean rememberMe, CreatePaymentRequest createPaymentRequest);
 
 	DataResult<GetPaymentByIdDto> getById(int paymentId);
 

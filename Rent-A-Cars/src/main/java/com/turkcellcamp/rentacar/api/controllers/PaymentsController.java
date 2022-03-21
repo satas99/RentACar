@@ -37,8 +37,8 @@ public class PaymentsController {
 	}
 	
 	@PostMapping("/add")
-	Result add(@RequestBody @Valid CreatePaymentRequest createPaymentRequest) {
-		return this.paymentService.add(createPaymentRequest);
+	Result add(boolean rememberMe,@RequestBody @Valid CreatePaymentRequest createPaymentRequest) {
+		return this.paymentService.add(rememberMe,createPaymentRequest);
 	}
 
 	@GetMapping("/getbyid/{paymentId}")

@@ -1,5 +1,6 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +82,8 @@ public class RentalCarManager implements RentalCarService {
 		checkIfRentalExists(id);
 		
 		RentalCar rentalCar = this.rentalCarDao.getByRentalCarId(id);
+		
+		rentalCar.setTotalPrice(updateTotalPrice(rentalCar, updateRentalCarRequest)); 
 		
 		rentalCar.getCar().setKilometerInfo(updateRentalCarRequest.getReturnKilometer());
 		
@@ -237,5 +240,25 @@ public class RentalCarManager implements RentalCarService {
     
 	}
 
+	private double updateTotalPrice(RentalCar rentalCar, UpdateRentalCarRequest updateRentalCarRequest) {
+
+		long dateBetween = ChronoUnit.DAYS.between(rentalCar.getReturnDate(), updateRentalCarRequest.getReturnDate());
+		
+		GetCarByIdDto car = this.carService.getById(rentalCar.getCar().getCarId()).getData();
+		
+		double totalPrice=0;
+		double rentPrice=car.getDailyPrice();
+	
+	    if(rentalCar.getRentCity().getCityId()!=updateRentalCarRequest.getReturnCityId()) {
+	        	totalPrice=totalPrice+750;	
+		}
+	    if(dateBetween!=0) {
+		
+		totalPrice=rentPrice*dateBetween;
+	}	
+	    return rentalCar.getTotalPrice()+ totalPrice;
+		
+
 
 }
+	}
