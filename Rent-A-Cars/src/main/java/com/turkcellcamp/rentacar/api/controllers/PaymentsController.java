@@ -36,13 +36,9 @@ public class PaymentsController {
 		return this.paymentService.getAll();
 	}
 	
-	@PostMapping("/isbankadd")
-	Result isBankAdd(@RequestBody @Valid CreatePaymentRequest createPaymentRequest) {
-		return this.paymentService.isBankAdd(createPaymentRequest);
-	}
-	@PostMapping("/halkbankadd")
-	Result halkBankAdd(@RequestBody @Valid CreatePaymentRequest createPaymentRequest) {
-		return this.paymentService.halkBankAdd(createPaymentRequest);
+	@PostMapping("/add")
+	Result add(@RequestBody @Valid CreatePaymentRequest createPaymentRequest) {
+		return this.paymentService.add(createPaymentRequest);
 	}
 
 	@GetMapping("/getbyid/{paymentId}")

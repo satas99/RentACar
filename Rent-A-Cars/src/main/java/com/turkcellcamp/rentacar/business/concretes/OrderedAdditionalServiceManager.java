@@ -104,15 +104,12 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	@Override
 	public DataResult<GetOrderedAdditionalServiceByIdDto> getById(int orderedadditionalServiceId){
 			
-		OrderedAdditionalService result = this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(orderedadditionalServiceId);
-	
-		if (result!=null){
-			GetOrderedAdditionalServiceByIdDto response = this.modelMapperService.forDto().map(result, GetOrderedAdditionalServiceByIdDto.class);
+		OrderedAdditionalService result = checkIfOrderedAdditionalServiceExists(orderedadditionalServiceId);
+
+		GetOrderedAdditionalServiceByIdDto response = this.modelMapperService.forDto().map(result, GetOrderedAdditionalServiceByIdDto.class);
 			
-			return new SuccessDataResult<GetOrderedAdditionalServiceByIdDto>(response, "Success");
-			
-		}
-		return new ErrorDataResult<GetOrderedAdditionalServiceByIdDto>("Cannot find an ordered additional service with this Id.");
+		return new SuccessDataResult<GetOrderedAdditionalServiceByIdDto>(response, "Success");
+
 	}
 	
 	@Override
@@ -146,12 +143,14 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		return additionalService;
 	}
 	
-	private boolean checkIfOrderedAdditionalServiceExists(int id){
+	private OrderedAdditionalService checkIfOrderedAdditionalServiceExists(int id){
 		
-		if(this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(id)!=null) {
-			return true;
+		OrderedAdditionalService orderedAdditionalService =this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(id);
+		
+		if(orderedAdditionalService==null) {
+			throw new BusinessException("Cannot find an ordered additional service with this Id.");
 		}
-		throw new BusinessException("Cannot find an ordered additional service with this Id.");
+		return orderedAdditionalService;
 	}
 	
 	private void updateOperation(OrderedAdditionalService orderedAdditionalService, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){

@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
 import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.PaymentService;
+import com.turkcellcamp.rentacar.business.abstracts.PosService;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetInvoiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetPaymentByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListPaymentDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreatePaymentRequest;
-import com.turkcellcamp.rentacar.core.PosServices.HalkBankService;
-import com.turkcellcamp.rentacar.core.PosServices.IsBankService;
-import com.turkcellcamp.rentacar.core.PosServices.PosService;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
@@ -29,22 +29,20 @@ import com.turkcellcamp.rentacar.entities.concretes.Payment;
 
 @Service
 public class PaymentManager implements PaymentService {
-
+	
 	private PaymentDao paymentDao;
 	private ModelMapperService modelMapperService;
 	private InvoiceService invoiceService;
 	private OrderedAdditionalServiceService orderedAdditionalServiceService;
-	private IsBankService isBankService;
-	private HalkBankService halkBankService;
+	private PosService posService;
 
 	@Autowired
-	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService,InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService, IsBankService isBankService, HalkBankService halkBankService) {
+	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService,InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService) {
 		this.paymentDao = paymentDao;
 		this.modelMapperService = modelMapperService;
 		this.invoiceService = invoiceService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
-		this.isBankService = isBankService;
-		this.halkBankService = halkBankService;
+		this.posService = posService;
 	}
 
 	@Override
@@ -60,8 +58,8 @@ public class PaymentManager implements PaymentService {
 	}
 
 	@Override
-	public Result isBankAdd(CreatePaymentRequest createPaymentRequest) {
-		
+	public Result add(CreatePaymentRequest createPaymentRequest) {
+	
 		checkIfInvoiceExists(createPaymentRequest.getInvoiceId());
 		
 		checkPaymentInvoiceExists(createPaymentRequest.getInvoiceId());
@@ -70,7 +68,7 @@ public class PaymentManager implements PaymentService {
 		
 		checkPaymentOrderedAdditionalServiceExists(createPaymentRequest.getOrderedAdditionalServiceId());
 		
-		this.isBankService.payments(createPaymentRequest.getCardOwnerName(), createPaymentRequest.getCardNumber(), createPaymentRequest.getCardCvvNumber());
+		this.posService.payments(createPaymentRequest.getCardOwnerName(), createPaymentRequest.getCardNumber(), createPaymentRequest.getCardCvvNumber());
 
 		Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
 		
@@ -78,27 +76,6 @@ public class PaymentManager implements PaymentService {
 
 		return new SuccessResult("Payment.Added ");
 	}
-	@Override
-	public Result halkBankAdd(CreatePaymentRequest createPaymentRequest) {
-		
-		
-		checkIfInvoiceExists(createPaymentRequest.getInvoiceId());
-		
-		checkPaymentInvoiceExists(createPaymentRequest.getInvoiceId());
-		
-		checkIfOrderedAdditionalServiceExists(createPaymentRequest.getOrderedAdditionalServiceId());
-		
-		checkPaymentOrderedAdditionalServiceExists(createPaymentRequest.getOrderedAdditionalServiceId());
-		
-		this.halkBankService.payments( createPaymentRequest.getCardNumber(), createPaymentRequest.getCardOwnerName(), createPaymentRequest.getCardCvvNumber());
-
-		Payment payment = this.modelMapperService.forRequest().map(createPaymentRequest, Payment.class);
-		
-		this.paymentDao.save(payment);
-
-		return new SuccessResult("Payment.Added ");
-	}
-
 
 	@Override
 	public DataResult<GetPaymentByIdDto> getById(int paymentId) {
@@ -145,14 +122,14 @@ public class PaymentManager implements PaymentService {
 	private void checkPaymentInvoiceExists(int id) {
 		
 		if(this.paymentDao.getByInvoice_invoiceId(id)!=null) {
-			throw new BusinessException("Can find an invoice with this payment id");
+			throw new BusinessException("There is an invoice with this payment id");
 		}
 	}
 	
 	private void checkPaymentOrderedAdditionalServiceExists(int id) {
 		
 		if(this.paymentDao.getByOrderedAdditionalService_orderedAdditionalServiceId(id)!=null) {
-			throw new BusinessException("Can find an ordered additional service with this payment id");
+			throw new BusinessException("There is an ordered additional service with this payment id");
 		}
 	}
 	

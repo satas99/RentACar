@@ -1,4 +1,4 @@
-package com.turkcellcamp.rentacar.core.PosServices;
+package com.turkcellcamp.rentacar.business.abstracts;
 
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
