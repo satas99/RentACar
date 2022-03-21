@@ -64,11 +64,7 @@ public class InvoiceManager implements InvoiceService {
 		idCorrectionForAdd(invoice, createInvoiceRequest);
 
 		invoiceTableSetColumns(invoice, createInvoiceRequest);
-		
-		checkIfCustomerExists(invoice.getCustomer().getCustomerId());
-		
-		checkIfRentalCarExists(invoice.getRentalCar().getRentalCarId());
-		
+
 		checkInvoiceIfRentalCarExists(invoice.getRentalCar().getRentalCarId());
 		
 		this.invoiceDao.save(invoice);

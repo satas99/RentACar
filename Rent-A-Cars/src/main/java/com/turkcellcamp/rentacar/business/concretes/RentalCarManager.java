@@ -195,8 +195,7 @@ public class RentalCarManager implements RentalCarService {
 
 	private boolean checkIfCarExists(int id){
 		
-		DataResult<GetCarByIdDto> result = this.carService.getById(id);
-		if (!result.isSuccess()) {
+		if (this.carService.getById(id)==null) {
 			throw new BusinessException("The car with this id does not exist..");
 		}
 		return true;

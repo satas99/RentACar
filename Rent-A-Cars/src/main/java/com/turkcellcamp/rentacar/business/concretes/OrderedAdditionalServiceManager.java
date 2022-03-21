@@ -102,7 +102,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(int orderedadditionalServiceId){
+	public DataResult<GetOrderedAdditionalServiceByIdDto> getById(int orderedadditionalServiceId){
 			
 		OrderedAdditionalService result = this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(orderedadditionalServiceId);
 	

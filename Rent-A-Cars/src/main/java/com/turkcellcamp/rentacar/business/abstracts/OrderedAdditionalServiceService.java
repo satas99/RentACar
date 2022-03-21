@@ -21,7 +21,7 @@ public interface OrderedAdditionalServiceService {
 	
 	Result update(int id,UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest);
 
-	DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(int orderedadditionalServiceId);
+	DataResult<GetOrderedAdditionalServiceByIdDto> getById(int orderedadditionalServiceId);
 	
 	DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByRentalCarId(int rentalCarId);
 }
