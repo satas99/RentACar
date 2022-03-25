@@ -1,6 +1,7 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,15 @@ import org.springframework.stereotype.Service;
 import com.turkcellcamp.rentacar.business.abstracts.BrandService;
 import com.turkcellcamp.rentacar.business.abstracts.CarService;
 import com.turkcellcamp.rentacar.business.abstracts.ColorService;
-import com.turkcellcamp.rentacar.business.dtos.gets.GetBrandByIdDto;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarByDailyPriceDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarByIdDto;
-import com.turkcellcamp.rentacar.business.dtos.gets.GetColorByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCarDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateCarRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateCarRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
@@ -47,6 +46,17 @@ public class CarManager implements CarService {
 	}
 
 	@Override
+	public DataResult<List<ListCarDto>> getAll() {
+		
+		var result = this.carDao.findAll();
+		
+		List<ListCarDto> response = result.stream()
+				.map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
+		
+		return new SuccessDataResult<List<ListCarDto>>(response, BusinessMessages.SUCCESS);
+	}
+
+	@Override
 	public Result add(CreateCarRequest createCarRequest){
 
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
@@ -57,7 +67,7 @@ public class CarManager implements CarService {
 		
 		this.carDao.save(car);
 		
-		return new SuccessResult("Car.Added");
+		return new SuccessResult(BusinessMessages.CARADDED);
 	}
 
 	@Override
@@ -75,8 +85,7 @@ public class CarManager implements CarService {
 		
 		this.carDao.save(car);
 		
-		return new SuccessResult("Car.Updated");
-
+		return new SuccessResult(BusinessMessages.CARUPDATED);
 	}
 
 	@Override
@@ -86,45 +95,26 @@ public class CarManager implements CarService {
 		
 		this.carDao.deleteById(id);
 		
-		return new SuccessResult("Car.Deleted");
-	}
-
-	@Override
-	public DataResult<List<ListCarDto>> getAll() {
-		
-		var result = this.carDao.findAll();
-		
-		List<ListCarDto> response = result.stream()
-				.map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
-		
-		return new SuccessDataResult<List<ListCarDto>>(response);
+		return new SuccessResult(BusinessMessages.CARDELETED);
 	}
 
 	@Override
 	public DataResult<GetCarByIdDto> getById(int carId){
 		
-		Car result = this.carDao.getByCarId(carId);
-		
-		if (result != null) {
-			GetCarByIdDto response = this.modelMapperService.forDto().map(result, GetCarByIdDto.class);
+		Car result = checkIfCarExists(carId);
+		GetCarByIdDto response = this.modelMapperService.forDto().map(result, GetCarByIdDto.class);
 			
-			return new SuccessDataResult<GetCarByIdDto>(response);
-		}
-		return new ErrorDataResult<GetCarByIdDto>("Can not find a car with this id.");
+		return new SuccessDataResult<GetCarByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
 	public DataResult<List<GetCarByDailyPriceDto>> getCarByDailyPrice(double dailyPrice) {
 		
-		var result = this.carDao.findByDailyPriceLessThanEqual(dailyPrice);
-		
-		if (result.size() != 0) {
-			List<GetCarByDailyPriceDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car, GetCarByDailyPriceDto.class)).collect(Collectors.toList());
+		List<Car> result = this.carDao.findByDailyPriceLessThanEqual(dailyPrice);
+		List<GetCarByDailyPriceDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car, GetCarByDailyPriceDto.class)).collect(Collectors.toList());
 			
-			return new SuccessDataResult<List<GetCarByDailyPriceDto>>(response);
+		return new SuccessDataResult<List<GetCarByDailyPriceDto>>(response, BusinessMessages.SUCCESS);
 		}
-		return new ErrorDataResult<List<GetCarByDailyPriceDto>>("Can not find a car which is daily price you wrote is below");
-	}
 
 	@Override
 	public DataResult<List<ListCarDto>> getAllPaged(int pageNumber, int pageSize) {
@@ -133,7 +123,7 @@ public class CarManager implements CarService {
 		List<Car> result = this.carDao.findAll(pageable).getContent();
 		List<ListCarDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListCarDto>>(response);
+		return new SuccessDataResult<List<ListCarDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -143,34 +133,32 @@ public class CarManager implements CarService {
 		List<Car> result = this.carDao.findAll(sort);	
 		List<ListCarDto> response = result.stream().map(car -> this.modelMapperService.forDto().map(car, ListCarDto.class)).collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListCarDto>>(response);
+		return new SuccessDataResult<List<ListCarDto>>(response, BusinessMessages.SUCCESS);
 	}
 
-	public boolean checkIfCarExists(int carId){
+	public Car checkIfCarExists(int carId){
 		
-		if (this.carDao.getByCarId(carId) == null) {
-			throw new BusinessException("Cannot find a car with this Id.");
+		Car car = this.carDao.getByCarId(carId);
+		
+		if (car == null) {
+			throw new BusinessException(BusinessMessages.CARNOTFOUND);
 		} else {
-			return true;
+			return car;
 		}
 	}
 
 	private boolean checkIfBrandExists(int id) {
 		
-		DataResult<GetBrandByIdDto> result = this.brandService.getById(id);
-		
-		if (!result.isSuccess()) {
-			throw new BusinessException("Cannot find a brand with this Id.");
+		if (this.brandService.getById(id)==null) {
+			throw new BusinessException(BusinessMessages.BRANDNOTFOUND);
 		}
 		return true;
 	}
 
 	private boolean checkIfColorExists(int id){
 		
-		DataResult<GetColorByIdDto> result = this.colorService.getById(id);
-		
-		if (!result.isSuccess()) {
-			throw new BusinessException("Cannot find a color with this Id..");
+		if (this.colorService.getById(id)==null) {
+			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
 		}
 		return true;
 	}
@@ -179,7 +167,6 @@ public class CarManager implements CarService {
 		
 		car.setDailyPrice(updateCarRequest.getDailyPrice());
 		car.setDescription(updateCarRequest.getDescription());
-
 	}
 	
 }

@@ -1,7 +1,6 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.CarAccidentService;
 import com.turkcellcamp.rentacar.business.abstracts.CarService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarAccidentByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCarAccidentDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateCarAccidentRequest;
@@ -35,6 +35,19 @@ public class CarAccidentManager implements CarAccidentService {
 		this.modelMapperService = modelMapperService;
 		this.carService = carService;
 	}
+	
+	@Override
+	public DataResult<List<ListCarAccidentDto>> getAll() {
+		
+		var result = this.carAccidentDao.findAll();
+		
+		List<ListCarAccidentDto> response = result.stream().map(carAccident ->this.modelMapperService.forDto()
+				.map(carAccident, ListCarAccidentDto.class)).collect(Collectors.toList());
+		
+		response = ıdCorrectionForGetAll(result, response);
+		
+		return new SuccessDataResult<List<ListCarAccidentDto>>(response, BusinessMessages.SUCCESS);
+	}
 
 	@Override
 	public Result add(CreateCarAccidentRequest createCarAccidentRequest) {
@@ -47,7 +60,7 @@ public class CarAccidentManager implements CarAccidentService {
 		
 		this.carAccidentDao.save(carAccident);
 		
-		return new SuccessResult("CarAccident.Added");
+		return new SuccessResult(BusinessMessages.CARACCİDENTADDED);
 	}
 
 	@Override
@@ -59,7 +72,7 @@ public class CarAccidentManager implements CarAccidentService {
 		updateOperation(carAccident, updateCarAccidentRequest);
 		this.carAccidentDao.save(carAccident);
 		
-		return new SuccessResult("CarAccident.Updated");
+		return new SuccessResult(BusinessMessages.CARACCİDENTUPDATED);
 	}
 
 	@Override
@@ -69,20 +82,7 @@ public class CarAccidentManager implements CarAccidentService {
 
 		this.carAccidentDao.deleteById(id);
 		
-		return new SuccessResult("CarAccident.Deleted");
-	}
-
-	@Override
-	public DataResult<List<ListCarAccidentDto>> getAll() {
-		
-		var result = this.carAccidentDao.findAll();
-		
-		List<ListCarAccidentDto> response = result.stream().map(carAccident ->this.modelMapperService.forDto()
-				.map(carAccident, ListCarAccidentDto.class)).collect(Collectors.toList());
-		
-		response = ıdCorrectionForGetAll(result, response);
-		
-		return new SuccessDataResult<List<ListCarAccidentDto>>(response);
+		return new SuccessResult(BusinessMessages.CARACCİDENTDELETED);
 	}
 
 	@Override
@@ -90,25 +90,25 @@ public class CarAccidentManager implements CarAccidentService {
 		
 		checkIfCarExists(carId);
 		
-		var result = checkCarAccidentIfCarExists(carId);
+		List<CarAccident> result = this.carAccidentDao.getByCar_CarId(carId);
 		
 		List<ListCarAccidentDto> response = result.stream().map(carAccident ->this.modelMapperService.forDto()
 				.map(carAccident, ListCarAccidentDto.class)).collect(Collectors.toList());
 		
 		response = ıdCorrectionForGetAll(result, response);
 		
-		return new SuccessDataResult<List<ListCarAccidentDto>>(response);
+		return new SuccessDataResult<List<ListCarAccidentDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
 	public DataResult<GetCarAccidentByIdDto> getById(int id) {
 
-		var result = checkIfCarAccidentExists(id);
+		CarAccident result = checkIfCarAccidentExists(id);
 		
 		GetCarAccidentByIdDto response = this.modelMapperService.forDto().map(result, GetCarAccidentByIdDto.class);
 		response.setCarId(result.getCar().getCarId());
 		
-		return new SuccessDataResult<GetCarAccidentByIdDto>(response);
+		return new SuccessDataResult<GetCarAccidentByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 	
 
@@ -119,6 +119,7 @@ public class CarAccidentManager implements CarAccidentService {
 	}
 	
 	private List<ListCarAccidentDto> ıdCorrectionForGetAll(List<CarAccident> result,List<ListCarAccidentDto> response) {
+		
 		for(int i = 0; i < result.size() ; i++) {
 			response.get(i).setCarId(result.get(i).getCar().getCarId());		
 		}
@@ -126,23 +127,19 @@ public class CarAccidentManager implements CarAccidentService {
 	}
 	
 	private boolean checkIfCarExists(int carId) {
+		
 		if(this.carService.getById(carId).getData() == null) {
-			throw new BusinessException("Cannot find a car with this Id.");
+			throw new BusinessException(BusinessMessages.CARNOTFOUND);
 		}
 		return true;
 	}
 	
 	private CarAccident checkIfCarAccidentExists(int carAccidentId) {
+		
 		CarAccident carAccident = this.carAccidentDao.getByCarAccidentId(carAccidentId);
+		
 		if(carAccident == null) {
-			throw new BusinessException("Cannot find a car accident with this Id.");
-		}
-		return carAccident;
-	}
-	private List<CarAccident> checkCarAccidentIfCarExists(int carId) {
-		List<CarAccident> carAccident = this.carAccidentDao.getByCar_CarId(carId);
-		if(carAccident.isEmpty()) {
-			throw new BusinessException("The car with this Id has no car accident");
+			throw new BusinessException(BusinessMessages.CARACCİDENTNOTFOUND);
 		}
 		return carAccident;
 	}

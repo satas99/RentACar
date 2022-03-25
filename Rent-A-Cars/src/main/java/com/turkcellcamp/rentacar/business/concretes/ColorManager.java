@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.ColorService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetColorByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListColorDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateColorRequest;
@@ -14,7 +15,6 @@ import com.turkcellcamp.rentacar.business.requests.updates.UpdateColorRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
@@ -43,7 +43,7 @@ public class ColorManager implements ColorService {
 				.map(color -> this.modelMapperService.forDto().map(color, ListColorDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListColorDto>>(response, "Success");
+		return new SuccessDataResult<List<ListColorDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -55,21 +55,7 @@ public class ColorManager implements ColorService {
 		
 		this.colorDao.save(color);
 		
-		return new SuccessResult("Color.Added ");
-
-	}
-
-	@Override
-	public DataResult<GetColorByIdDto> getById(int colorId) {
-		
-		Color result = this.colorDao.getByColorId(colorId);
-		
-		if (result != null) {
-			GetColorByIdDto response = this.modelMapperService.forDto().map(result, GetColorByIdDto.class);
-			
-			return new SuccessDataResult<GetColorByIdDto>(response, "Success");
-		}
-		return new ErrorDataResult<GetColorByIdDto>("Cannot find a color with this Id.");
+		return new SuccessResult(BusinessMessages.COLORADDED);
 	}
 
 	@Override
@@ -83,8 +69,7 @@ public class ColorManager implements ColorService {
 		updateOperation(color, updateColorRequest);
 		this.colorDao.save(color);
 		
-		return new SuccessResult("Color.Updated ");
-
+		return new SuccessResult(BusinessMessages.COLORUPDATED);
 	}
 
 	@Override
@@ -94,8 +79,17 @@ public class ColorManager implements ColorService {
 		
 		this.colorDao.deleteById(id);
 		
-		return new SuccessResult("Color.Deleted");
+		return new SuccessResult(BusinessMessages.COLORDELETED);
+	}
 
+
+	@Override
+	public DataResult<GetColorByIdDto> getById(int colorId) {
+		
+		Color result = checkIfColorExists(colorId);
+		GetColorByIdDto response = this.modelMapperService.forDto().map(result, GetColorByIdDto.class);
+	
+		return new SuccessDataResult<GetColorByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 
 	private boolean checkIfColorNameExists(String colorName){
@@ -103,21 +97,21 @@ public class ColorManager implements ColorService {
 		if (this.colorDao.getByColorName(colorName) == null) {
 			return true;
 		}
-		throw new BusinessException("Such a color exists.");
-
+		throw new BusinessException(BusinessMessages.COLOREXISTS);
 	}
 
-	private boolean checkIfColorExists(int colorId){
+	private Color checkIfColorExists(int colorId){
 		
-		if (this.colorDao.getByColorId(colorId) != null) {
-			return true;
+		Color color = this.colorDao.getByColorId(colorId);
+		
+		if (color != null) {
+			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
 		}
-		throw new BusinessException("Cannot find a color with this Id.");
+		return color;
 	}
 
 	private void updateOperation(Color color, UpdateColorRequest updateColorRequest) {
 		
 		color.setColorName(updateColorRequest.getColorName());
-
 	}
 }

@@ -1,8 +1,8 @@
 package com.turkcellcamp.rentacar.business.concretes;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,24 +12,30 @@ import org.springframework.stereotype.Service;
 import com.turkcellcamp.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcellcamp.rentacar.business.abstracts.CarService;
 import com.turkcellcamp.rentacar.business.abstracts.CustomerService;
+import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
+import com.turkcellcamp.rentacar.business.abstracts.PaymentService;
 import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetRentalCarByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCarMaintenanceDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListRentalCarDto;
+import com.turkcellcamp.rentacar.business.requests.creates.CreateInvoiceRequest;
+import com.turkcellcamp.rentacar.business.requests.creates.CreatePaymentRequest;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateRentalCarRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateRentalCarRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
 import com.turkcellcamp.rentacar.dataaccess.abstracts.RentalCarDao;
 import com.turkcellcamp.rentacar.entities.concretes.Customer;
 import com.turkcellcamp.rentacar.entities.concretes.RentalCar;
+
+import net.bytebuddy.utility.RandomString;
 
 @Service
 public class RentalCarManager implements RentalCarService {
@@ -39,15 +45,32 @@ public class RentalCarManager implements RentalCarService {
 	private CarService carService;
 	private ModelMapperService modelMapperService;
 	private CustomerService customerService;
+	private InvoiceService invoiceService;
+	private PaymentService paymentService;
 
 	@Autowired
-	public RentalCarManager(RentalCarDao rentalCarDao, @Lazy CarMaintenanceService carMaintenanceService,@Lazy CarService carService, ModelMapperService modelMapperService,CustomerService customerService) {
+	@Lazy
+	public RentalCarManager(RentalCarDao rentalCarDao, @Lazy CarMaintenanceService carMaintenanceService,@Lazy CarService carService, ModelMapperService modelMapperService,CustomerService customerService, @Lazy InvoiceService invoiceService, PaymentService paymentService) {
 		
 		this.rentalCarDao = rentalCarDao;
 		this.carMaintenanceService = carMaintenanceService;
 		this.carService = carService;
 		this.modelMapperService = modelMapperService;
 		this.customerService = customerService;
+		this.invoiceService = invoiceService;
+		this.paymentService = paymentService;
+	}
+
+	@Override
+	public DataResult<List<ListRentalCarDto>> getAll() {
+		
+		var result = this.rentalCarDao.findAll();
+	
+		List<ListRentalCarDto> response = result.stream()
+				.map(rentalCar -> this.modelMapperService.forDto().map(rentalCar, ListRentalCarDto.class))
+				.collect(Collectors.toList());
+		
+		return new SuccessDataResult<List<ListRentalCarDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -57,7 +80,8 @@ public class RentalCarManager implements RentalCarService {
 		
 		checkIfCarExists(createRentalCarRequest.getCarId());
 		
-		checkIfCustomerExists(createRentalCarRequest.getCustomerId());
+		//checkIfCustomerExists(createRentalCarRequest.getCustomerId());"ModelMapperı düzeltmek için Setcustomer işlemi yapıldığında customerın getById'sini kullanıyoruz ve 
+		//orada kontrol yapıldığından dolayı tekrar kontrol yapmaya gerek yoktur."
 		
 		RentalCar rentalCar = this.modelMapperService.forRequest().map(createRentalCarRequest, RentalCar.class);
 		checkIfCarMaintenanceExists(rentalCar);
@@ -66,14 +90,14 @@ public class RentalCarManager implements RentalCarService {
 		
 		rentalCar.setTotalPrice(totalPriceCalculator(rentalCar));
 		
-		rentalCar.setCustomer(customerCorrection(createRentalCarRequest.getCustomerId()));
+		rentalCar.setCustomer(customerCorrection(createRentalCarRequest.getCustomerId()));//"Customer getById'yi kullandığı için checkIfCustomerExists kontrolü zaten orada yapılmaktadır."
 		
 		rentalCar.setStartingKilometer(this.carService.getById(createRentalCarRequest.getCarId()).getData().getKilometerInfo());
 		
 		
 		this.rentalCarDao.save(rentalCar);
 		
-		return new SuccessResult("RentalCar.Added");
+		return new SuccessResult(BusinessMessages.RENTALCARADDED);
 	}
 
 	@Override
@@ -88,9 +112,15 @@ public class RentalCarManager implements RentalCarService {
 		rentalCar.getCar().setKilometerInfo(updateRentalCarRequest.getReturnKilometer());
 		
 		updateOperation(rentalCar, updateRentalCarRequest);
-		rentalCarDao.save(rentalCar);
+		rentalCarDao.save(rentalCar);;
 		
-		return new SuccessResult("RentalCar.Updated");
+//		CreateInvoiceRequest createInvoiceRequest = new CreateInvoiceRequest();
+//		createInvoiceRequest.setCustomerId(rentalCar.getCustomer().getCustomerId());
+//		createInvoiceRequest.setInvoiceNo(String.valueOf(id*10+RandomString.make()));
+//		createInvoiceRequest.setRentalCarId(id);
+//		this.invoiceService.add(createInvoiceRequest);
+		
+		return new SuccessResult(BusinessMessages.RENTALCARUPDATED);
 	}
 
 	@Override
@@ -100,20 +130,8 @@ public class RentalCarManager implements RentalCarService {
 		
 		this.rentalCarDao.deleteById(id);
 		
-		return new SuccessResult("RentalCar.Deleted");
+		return new SuccessResult(BusinessMessages.RENTALCARDELETED);
 
-	}
-
-	@Override
-	public DataResult<List<ListRentalCarDto>> getAll() {
-		
-		var result = this.rentalCarDao.findAll();
-	
-		List<ListRentalCarDto> response = result.stream()
-				.map(rentalCar -> this.modelMapperService.forDto().map(rentalCar, ListRentalCarDto.class))
-				.collect(Collectors.toList());
-		
-		return new SuccessDataResult<List<ListRentalCarDto>>(response);
 	}
 
 	@Override
@@ -125,24 +143,22 @@ public class RentalCarManager implements RentalCarService {
 		
 		response.setTotalDailyPrice(result.getTotalPrice());
 
-		return new SuccessDataResult<GetRentalCarByIdDto>(response, "Success");
+		return new SuccessDataResult<GetRentalCarByIdDto>(response, BusinessMessages.SUCCESS);
 
 	}
 
 	@Override
 	public DataResult<List<ListRentalCarDto>> getRentalByCarId(int id){
 		
-		List<RentalCar> result = this.rentalCarDao.getByCar_carId(id);
+		checkIfCarExists(id);
 		
-		if (checkIfCarExists(id) && !result.isEmpty()) {
-			List<ListRentalCarDto> response = result.stream()
-					.map(rentalCar -> this.modelMapperService.forDto().map(rentalCar, ListRentalCarDto.class))
-					.collect(Collectors.toList());
+		List<RentalCar> result = this.rentalCarDao.getByCar_carId(id);
+		List<ListRentalCarDto> response = result.stream()
+			.map(rentalCar -> this.modelMapperService.forDto().map(rentalCar, ListRentalCarDto.class))
+			.collect(Collectors.toList());
 			
-			return new SuccessDataResult<List<ListRentalCarDto>>(response, "Success");
+		return new SuccessDataResult<List<ListRentalCarDto>>(response, BusinessMessages.SUCCESS);
 		}
-		return new ErrorDataResult<List<ListRentalCarDto>>("The car with this id does not car rented exist..");
-	}
 
 	private boolean checkIfCarMaintenanceExists(RentalCar rentalCar){
 		
@@ -154,21 +170,11 @@ public class RentalCarManager implements RentalCarService {
 		
 		for (ListCarMaintenanceDto listCarMaintenanceDto : result.getData()) {
 			if (listCarMaintenanceDto.getReturnDate() == null) {
-				throw new BusinessException("The car cannot be sent for rent because it is on maintenance.");
+				throw new BusinessException(BusinessMessages.RENTALCARINMAINTENANCE);
 			}
 		}
 		return true;
 	}
-	
-	
-	private void checkIfCustomerExists(int customerId) {
-		
-		if(this.customerService.getById(customerId)==null) {
-			throw new BusinessException("The customer with this id does not exist..");
-		}
-		
-	}
-
 
 	private boolean checkRentalIfCarExists(int id){
 		
@@ -180,7 +186,7 @@ public class RentalCarManager implements RentalCarService {
 		
 		for (RentalCar rentalCar : result) {
 			if (rentalCar.getReturnDate() == null) {
-				throw new BusinessException("the car is still in rental");
+				throw new BusinessException(BusinessMessages.RENTALCARINRENT);
 			}
 		}
 		return true;
@@ -191,7 +197,7 @@ public class RentalCarManager implements RentalCarService {
 		
 		RentalCar rentalCar = this.rentalCarDao.getByRentalCarId(id);
 		if (rentalCar == null) {
-			throw new BusinessException("The rented car with this id does not exist..");
+			throw new BusinessException(BusinessMessages.RENTALCARNOTFOUND);
 		}
 		return rentalCar;
 	}
@@ -199,7 +205,7 @@ public class RentalCarManager implements RentalCarService {
 	private boolean checkIfCarExists(int id){
 		
 		if (this.carService.getById(id)==null) {
-			throw new BusinessException("The car with this id does not exist..");
+			throw new BusinessException(BusinessMessages.CARNOTFOUND);
 		}
 		return true;
 	}
@@ -213,7 +219,6 @@ public class RentalCarManager implements RentalCarService {
 	private Customer customerCorrection(int customerId){
 		
 		GetCustomerByIdDto getCustomerByIdDto = this.customerService.getById(customerId).getData();
-		
 		Customer customer = this.modelMapperService.forDto().map(getCustomerByIdDto, Customer.class);
 		
 		return customer;
@@ -248,15 +253,17 @@ public class RentalCarManager implements RentalCarService {
 		
 		double totalPrice=0;
 		double rentPrice=car.getDailyPrice();
-	
+		
+	    if(dateBetween!=0) {
+	    	
 	    if(rentalCar.getRentCity().getCityId()!=updateRentalCarRequest.getReturnCityId()) {
 	        	totalPrice=totalPrice+750;	
 		}
-	    if(dateBetween!=0) {
-		
+	    
 		totalPrice=rentPrice*dateBetween;
 	}	
-	    return rentalCar.getTotalPrice()+ totalPrice;
+	    System.out.println(totalPrice);
+	    return totalPrice;
 		
 
 

@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.UserService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetUserByIdDto;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateUserRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
@@ -32,15 +32,10 @@ public class UserManager implements UserService {
 	@Override
 	public DataResult<GetUserByIdDto> getById(int userId) {
 
-		User result = this.userDao.getByUserId(userId);
-		
-		if (result != null) {
-			
-			GetUserByIdDto response = this.modelMapperService.forDto().map(result, GetUserByIdDto.class);
+		User result = checkIfUserExists(userId);
+		GetUserByIdDto response = this.modelMapperService.forDto().map(result, GetUserByIdDto.class);
 
-			return new SuccessDataResult<GetUserByIdDto>(response, "Success");
-		}
-		return new ErrorDataResult<GetUserByIdDto>("Cannot find an user with this Id.");
+		return new SuccessDataResult<GetUserByIdDto>(response, "Success");
 	}
 
 	@Override
@@ -52,7 +47,7 @@ public class UserManager implements UserService {
 		updateOperation(user, updateUserRequest);
 		this.userDao.save(user);
 
-		return new SuccessResult("User.Updated");
+		return new SuccessResult(BusinessMessages.USERUPDATED);
 	}
 
 	private void updateOperation(User user, UpdateUserRequest updateUserRequest) {
@@ -62,12 +57,14 @@ public class UserManager implements UserService {
 
 	}
 
-	private boolean checkIfUserExists(int id){
-
-		if (this.userDao.getByUserId(id) != null) {
-			return true;
+	private User checkIfUserExists(int id){
+		
+		User user = this.userDao.getByUserId(id);
+		
+		if (user != null) {
+			throw new BusinessException(BusinessMessages.USERNOTFOUND);
 		}
-		throw new BusinessException("Cannot find an user with this Id.");
+		return user;
 	}
 
 }

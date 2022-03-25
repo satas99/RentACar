@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.CustomerService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCustomerByIdDto;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
@@ -29,14 +30,14 @@ public class CustomerManager implements CustomerService {
 		Customer result = checkIfCustomerExists(id);
 		GetCustomerByIdDto response = this.modelMapperService.forDto().map(result, GetCustomerByIdDto.class);
 
-		return new SuccessDataResult<GetCustomerByIdDto>(response, "Success");
+		return new SuccessDataResult<GetCustomerByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 
 	private Customer checkIfCustomerExists(int id) {
 		Customer customer = this.customerDao.getByCustomerId(id);
 
 		if (customer == null) {
-			throw new BusinessException("Cannot find a customer with this Id.");
+			throw new BusinessException(BusinessMessages.CUSTOMERNOTFOUND);
 		}
 		return customer;
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.IndividualCustomerService;
 import com.turkcellcamp.rentacar.business.abstracts.UserService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetIndividualCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetUserByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListIndividualCustomerDto;
@@ -46,7 +47,7 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 				.map(individualCustomer -> this.modelMapperService.forDto().map(individualCustomer, ListIndividualCustomerDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListIndividualCustomerDto>>(response, "Success");
+		return new SuccessDataResult<List<ListIndividualCustomerDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -60,19 +61,9 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		
 		this.individualCustomerDao.save(individualCustomer);
 		
-		return new SuccessResult("IndividualCustomer.Added");
+		return new SuccessResult(BusinessMessages.INDIVIDUALCUSTOMERADDED);
 	}
-
-	@Override
-	public Result delete(int id) throws BusinessException {
-		
-		checkIfIndividualCustomerExists(id);
-		
-		this.individualCustomerDao.deleteById(id);
-		
-		return new SuccessResult("IndividualCustomer.Deleted");
-	}
-
+	
 	@Override
 	public Result update(int id, UpdateIndividualCustomerRequest updateindividualCustomerRequest) {
 		
@@ -84,8 +75,26 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		updateOperation(id,individualCustomer, updateindividualCustomerRequest);
 		this.individualCustomerDao.save(individualCustomer);
 		
-		return new SuccessResult("IndividualCustomer.Updated");
+		return new SuccessResult(BusinessMessages.INDIVIDUALCUSTOMERUPDATED);
+	}
+	
+	@Override
+	public Result delete(int id) throws BusinessException {
+		
+		checkIfIndividualCustomerExists(id);
+		
+		this.individualCustomerDao.deleteById(id);
+		
+		return new SuccessResult(BusinessMessages.INDIVIDUALCUSTOMERDELETED);
+	}
 
+	@Override
+	public DataResult<GetIndividualCustomerByIdDto> getById(int id) {
+		
+		IndividualCustomer result = checkIfIndividualCustomerExists(id);
+		GetIndividualCustomerByIdDto response = this.modelMapperService.forDto().map(result, GetIndividualCustomerByIdDto.class);
+		
+		return new SuccessDataResult<GetIndividualCustomerByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 	
 	private void updateOperation(int id, IndividualCustomer individualCustomer,UpdateIndividualCustomerRequest updateindividualCustomerRequest) {
@@ -101,36 +110,27 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		
 	}
 
-	@Override
-	public DataResult<GetIndividualCustomerByIdDto> getById(int id) {
-		
-		IndividualCustomer result = checkIfIndividualCustomerExists(id);
-		GetIndividualCustomerByIdDto response = this.modelMapperService.forDto().map(result, GetIndividualCustomerByIdDto.class);
-		
-		return new SuccessDataResult<GetIndividualCustomerByIdDto>(response, "Success");
-	}
-
 	private IndividualCustomer checkIfIndividualCustomerExists(int id) {
 		
 		
 		IndividualCustomer individualCustomer = this.individualCustomerDao.getByIndividualCustomerId(id);
 		
 		if(this.individualCustomerDao.getByIndividualCustomerId(id)==null) {
-			throw new BusinessException("Cannot find a individual customer with this Id.");
+			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERNOTFOUND);
 		}
 		return individualCustomer;
 	}
 	private boolean checkIfMailExists(String mail) {
 		
 		if(this.individualCustomerDao.findByEmail(mail)!=null) {
-			throw new BusinessException("Such a mail exists.");
+			throw new BusinessException(BusinessMessages.MAİLEXİSTS);
 		}
 		return true;
 	}
 	private boolean checkIfIdentityNumberExistsAndRegex(String ıdentityNumber) {
   
 		if( this.individualCustomerDao.findByIdentityNumber(ıdentityNumber)!=null) {
-			throw new BusinessException("Such a ıdentityNumber exists.");
+			throw new BusinessException(BusinessMessages.IDENTITYNUMBEREXİSTS);
 		}
 		return true;
 	}

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.BrandService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetBrandByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListBrandDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateBrandRequest;
@@ -14,7 +15,6 @@ import com.turkcellcamp.rentacar.business.requests.updates.UpdateBrandRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
@@ -42,32 +42,18 @@ public class BrandManager implements BrandService {
 				.map(brand -> this.modelMapperService.forDto().map(brand, ListBrandDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListBrandDto>>(response, "Success");
+		return new SuccessDataResult<List<ListBrandDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest){
 		
-		checkIfBrandName(createBrandRequest.getBrandName());
+		checkIfBrandNameExists(createBrandRequest.getBrandName());
 		
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
 		this.brandDao.save(brand);
 		
-		return new SuccessResult("Brand.Added ");
-
-	}
-
-	public DataResult<GetBrandByIdDto> getById(int brandId) {
-		
-		var result = this.brandDao.getByBrandId(brandId);
-		
-		if (result != null) {
-			GetBrandByIdDto response = this.modelMapperService.forRequest().map(result, GetBrandByIdDto.class);
-			
-			return new SuccessDataResult<GetBrandByIdDto>(response, "Success");
-		}
-		return new ErrorDataResult<GetBrandByIdDto>("Cannot find a brand with this Id.");
-
+		return new SuccessResult(BusinessMessages.BRANDADDED);
 	}
 
 	@Override
@@ -75,13 +61,13 @@ public class BrandManager implements BrandService {
 		
 		checkIfBrandExists(id);
 		
-		checkIfBrandName(updateBrandRequest.getBrandName());
+		checkIfBrandNameExists(updateBrandRequest.getBrandName());
 		
 		Brand brand = this.brandDao.getByBrandId(id);
 		updateOperation(brand, updateBrandRequest);
 		this.brandDao.save(brand);
 		
-		return new SuccessResult("Brand.Updated");
+		return new SuccessResult(BusinessMessages.BRANDUPDATED);
 	}
 
 	@Override
@@ -91,25 +77,36 @@ public class BrandManager implements BrandService {
 		
 		this.brandDao.deleteById(id);
 		
-		return new SuccessResult("Brand.Deleted ");
+		return new SuccessResult(BusinessMessages.BRANDDELETED);
 
 	}
 
-	private boolean checkIfBrandName(String brandName){
+	public DataResult<GetBrandByIdDto> getById(int brandId) {
+		
+		Brand result = checkIfBrandExists(brandId);
+		GetBrandByIdDto response = this.modelMapperService.forRequest().map(result, GetBrandByIdDto.class);
+			
+		return new SuccessDataResult<GetBrandByIdDto>(response, BusinessMessages.SUCCESS);
+
+	}
+
+	private boolean checkIfBrandNameExists(String brandName){
 		
 		if (this.brandDao.getByBrandName(brandName) == null) {
 			return true;
 		}
-		throw new BusinessException("Such a brand exists.");
+		throw new BusinessException(BusinessMessages.BRANDEXISTS);
 
 	}
 
-	private boolean checkIfBrandExists(int brandId){
+	private Brand checkIfBrandExists(int brandId){
 		
-		if (this.brandDao.getByBrandId(brandId) != null) {
-			return true;
+		Brand brand = this.brandDao.getByBrandId(brandId) ;
+		
+		if (brand== null) {
+			throw new BusinessException(BusinessMessages.BRANDNOTFOUND);
 		}
-		throw new BusinessException("Cannot find a brand with this Id.");
+		return brand;
 	}
 
 	private void updateOperation(Brand brand, UpdateBrandRequest updateBrandRequest) {

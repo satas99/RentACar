@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcellcamp.rentacar.business.abstracts.UserService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCorporateCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetUserByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCorporateCustomerDto;
@@ -45,7 +46,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 				.map(corporateCustomer -> this.modelMapperService.forDto().map(corporateCustomer, ListCorporateCustomerDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<ListCorporateCustomerDto>>(response, "Success");
+		return new SuccessDataResult<List<ListCorporateCustomerDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		
 		this.corporateCustomerDao.save(corporateCustomer);
 		
-		return new SuccessResult("CorporateCustomer.Added");
+		return new SuccessResult(BusinessMessages.CORPORATECUSTOMERADDED);
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		updateOperation(id,corporateCustomer, updateCorporateCustomerRequest);
 		this.corporateCustomerDao.save(corporateCustomer);
 		
-		return new SuccessResult("CorporateCustomer.Updated");
+		return new SuccessResult(BusinessMessages.CORPORATECUSTOMERUPDATED);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		
 		this.corporateCustomerDao.deleteById(id);
 		
-		return new SuccessResult("CorporateCustomer.Deleted");
+		return new SuccessResult(BusinessMessages.CORPORATECUSTOMERDELETED);
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		CorporateCustomer result = checkIfCorporateCustomerExists(id);
 		GetCorporateCustomerByIdDto response = this.modelMapperService.forDto().map(result, GetCorporateCustomerByIdDto.class);
 		
-		return new SuccessDataResult<GetCorporateCustomerByIdDto>(response, "Success");
+		return new SuccessDataResult<GetCorporateCustomerByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 	
 
@@ -116,7 +117,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		CorporateCustomer corporateCustomer = this.corporateCustomerDao.getByCorporateCustomerId(id);
 		
 		if(this.corporateCustomerDao.getByCorporateCustomerId(id)==null) {
-			throw new BusinessException("Cannot find a corporate customer with this Id.");
+			throw new BusinessException(BusinessMessages.CORPORATECUSTOMERNOTFOUND);
 		}
 		return corporateCustomer;
 	}
@@ -126,7 +127,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		CorporateCustomer corporateCustomer = this.corporateCustomerDao.findByEmail(mail);
 		
 		if(corporateCustomer!=null) {
-			throw new BusinessException("Such a mail exists.");
+			throw new BusinessException(BusinessMessages.MAİLEXİSTS);
 		}
 		return true;
 	}
@@ -136,7 +137,7 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		CorporateCustomer corporateCustomer = this.corporateCustomerDao.findByTaxNumber(taxNmuber);
 		
 		if(corporateCustomer!=null) {
-			throw new BusinessException("Such a tax number exists.");
+			throw new BusinessException(BusinessMessages.TAXNUMBEREXİSTS);
 		}
 		return true;
 	}

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.CreditCardService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateCreditCardRequest;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
@@ -33,7 +34,7 @@ public class CreditCardManager implements CreditCardService {
 		
 		this.creditCardDao.save(creditCard);
 		
-		return new SuccessResult("CreditCard.Added");
+		return new SuccessResult(BusinessMessages.CREDİTCARDADDED);
 	}
 	
 }

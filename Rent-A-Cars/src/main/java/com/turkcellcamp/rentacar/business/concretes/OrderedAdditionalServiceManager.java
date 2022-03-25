@@ -5,26 +5,29 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcellcamp.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetAdditionalServiceByIdDto;
+import com.turkcellcamp.rentacar.business.dtos.gets.GetCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetOrderedAdditionalServiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetRentalCarByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListOrderedAdditionalServiceDto;
+import com.turkcellcamp.rentacar.business.requests.creates.CreateInvoiceRequest;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateOrderedAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateOrderedAdditionalServiceRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
-import com.turkcellcamp.rentacar.core.utilities.results.ErrorDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
 import com.turkcellcamp.rentacar.dataaccess.abstracts.OrderedAdditionalServiceDao;
 import com.turkcellcamp.rentacar.entities.concretes.AdditionalService;
+import com.turkcellcamp.rentacar.entities.concretes.Customer;
+import com.turkcellcamp.rentacar.entities.concretes.Invoice;
 import com.turkcellcamp.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcellcamp.rentacar.entities.concretes.RentalCar;
 
@@ -53,10 +56,9 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 						ListOrderedAdditionalServiceDto.class))
 				.collect(Collectors.toList());
 
-		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, "Success");
+		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, BusinessMessages.SUCCESS);
 	}
 	
-	@Transactional
 	@Override
 	public Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
 
@@ -64,26 +66,15 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		orderedAdditionalService.setOrderedAdditionalServiceId(0);
 		
-		RentalCar rentalCar = checkIfRentalExists(createOrderedAdditionalServiceRequest.getRentalCarId());
-		orderedAdditionalService.setRentalCar(rentalCar);
+		idCorrectionForAdd(orderedAdditionalService,createOrderedAdditionalServiceRequest);//id düzeltme işleminde rentalcar'ın getbyıd metodu üzerinden rentalcarın varlığı kontrol edilmiştir."
 
 		checkIfAdditionalServiceExists(createOrderedAdditionalServiceRequest.getAdditionalServiceId());
 
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
 
-		return new SuccessResult("OrderedAdditionalService.Added");
+		return new SuccessResult(BusinessMessages.ORDEREDADDITIONALSERVICEADDED);
 	}
 
-	@Override
-	public Result delete(int id){
-		
-		checkIfOrderedAdditionalServiceExists(id);
-
-		this.orderedAdditionalServiceDao.deleteById(id);
-
-		return new SuccessResult(" OrderedAdditionalService.Deleted");
-	}
-	
 	@Override
 	public Result update(int id, UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest){
 		
@@ -98,7 +89,17 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		this.orderedAdditionalServiceDao.save(orderedadditionalService);
 		
-		return new SuccessResult(" OrderedAdditionalService.Updated");
+		return new SuccessResult(BusinessMessages.ORDEREDADDITIONALSERVICEUPDATED);
+	}
+
+	@Override
+	public Result delete(int id){
+		
+		checkIfOrderedAdditionalServiceExists(id);
+
+		this.orderedAdditionalServiceDao.deleteById(id);
+
+		return new SuccessResult(BusinessMessages.ORDEREDADDITIONALSERVICEDELETED);
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
 		GetOrderedAdditionalServiceByIdDto response = this.modelMapperService.forDto().map(result, GetOrderedAdditionalServiceByIdDto.class);
 			
-		return new SuccessDataResult<GetOrderedAdditionalServiceByIdDto>(response, "Success");
+		return new SuccessDataResult<GetOrderedAdditionalServiceByIdDto>(response, BusinessMessages.SUCCESS);
 
 	}
 	
@@ -118,7 +119,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		List<OrderedAdditionalService> result = this.orderedAdditionalServiceDao.getByRentalCar_rentalCarId(rentalCarId);
 		List<ListOrderedAdditionalServiceDto> response = result.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService, ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
 
-		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, "Success");
+		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, BusinessMessages.SUCCESS);
 	}
 	
 	private RentalCar checkIfRentalExists(int id){
@@ -126,10 +127,18 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		GetRentalCarByIdDto getRentalCarByIdDto = this.rentalCarService.getById(id).getData();
 		
 		if (getRentalCarByIdDto == null) {
-			throw new BusinessException("Cannot find a rented with this Id.");
+			throw new BusinessException(BusinessMessages.RENTALCARNOTFOUND);
 		}
 		RentalCar rentalCar = this.modelMapperService.forDto().map(getRentalCarByIdDto, RentalCar.class);
 		return rentalCar;
+	}
+	
+	private void idCorrectionForAdd(OrderedAdditionalService orderedAdditionalService, CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) {
+
+		GetRentalCarByIdDto getRentalCarByIdDto = this.rentalCarService.getById(orderedAdditionalService.getRentalCar().getRentalCarId()).getData();
+		RentalCar rentalCar = this.modelMapperService.forDto().map(getRentalCarByIdDto, RentalCar.class);
+
+		orderedAdditionalService.setRentalCar(rentalCar);
 	}
 
 	private AdditionalService checkIfAdditionalServiceExists(int id){
@@ -137,7 +146,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		GetAdditionalServiceByIdDto getAdditionalServiceByIdDto = this.additionalServiceService.getByAdditionalServiceId(id).getData();
 		
 		if (getAdditionalServiceByIdDto == null) {
-			throw new BusinessException("Cannot find an additional service with this Id.");
+			throw new BusinessException(BusinessMessages.ADDITIONALSERVICENOTFOUND);
 		}
 		AdditionalService additionalService = this.modelMapperService.forDto().map(getAdditionalServiceByIdDto, AdditionalService.class);
 		return additionalService;
@@ -148,7 +157,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		OrderedAdditionalService orderedAdditionalService =this.orderedAdditionalServiceDao.getByOrderedAdditionalServiceId(id);
 		
 		if(orderedAdditionalService==null) {
-			throw new BusinessException("Cannot find an ordered additional service with this Id.");
+			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICENOTFOUND);
 		}
 		return orderedAdditionalService;
 	}

@@ -13,6 +13,7 @@ import com.turkcellcamp.rentacar.business.abstracts.CustomerService;
 import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
 import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
+import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetAdditionalServiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCustomerByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetInvoiceByIdDto;
@@ -53,36 +54,6 @@ public class InvoiceManager implements InvoiceService {
 	}
 
 	@Override
-	public Result add(CreateInvoiceRequest createInvoiceRequest){
-
-		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
-		
-		invoice.setInvoiceId(0);
-		
-		checkIfInvoiceNoExists(invoice.getInvoiceNo());
-		
-		idCorrectionForAdd(invoice, createInvoiceRequest);
-
-		invoiceTableSetColumns(invoice, createInvoiceRequest);
-
-		checkInvoiceIfRentalCarExists(invoice.getRentalCar().getRentalCarId());
-		
-		this.invoiceDao.save(invoice);
-
-		return new SuccessResult("Invoice.Added");
-	}
-
-	@Override
-	public Result delete(int id){
-		
-		checkIfInvoiceExists(id);
-		
-		this.invoiceDao.deleteById(id);
-
-		return new SuccessResult("Invoice.Deleted");
-	}
-
-	@Override
 	public DataResult<List<ListInvoiceDto>> getAll() {
 
 		var result = this.invoiceDao.findAll();
@@ -92,7 +63,27 @@ public class InvoiceManager implements InvoiceService {
 
 		response = idCorrectionGetAll(result, response);
 
-		return new SuccessDataResult<List<ListInvoiceDto>>(response, "Success");
+		return new SuccessDataResult<List<ListInvoiceDto>>(response, BusinessMessages.SUCCESS);
+	}
+	
+	@Override
+	public Result add(CreateInvoiceRequest createInvoiceRequest){
+
+		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
+		
+		invoice.setInvoiceId(0);
+		
+		checkIfInvoiceNoExists(invoice.getInvoiceNo());
+		
+		idCorrectionForAdd(invoice, createInvoiceRequest);// "ModelMapper düzeltmesi için yazılan idCorrection metodunda ilgili nesnelerin getById metotları çağrılıyor 
+		//getById metotlarında nesnelerin var olup olmadığı kontrol edildiği için tekrar kontrol etmeye gerek kalmamıştır."
+
+		invoiceTableSetColumns(invoice, createInvoiceRequest);
+
+		
+		this.invoiceDao.save(invoice);
+
+		return new SuccessResult(BusinessMessages.INVOICEADDED);
 	}
 
 	@Override
@@ -104,7 +95,17 @@ public class InvoiceManager implements InvoiceService {
 		updateOperation(invoice, updateInvoiceRequest);
 		this.invoiceDao.save(invoice);
 
-		return new SuccessResult("Invoice.Updated");
+		return new SuccessResult(BusinessMessages.INVOICEUPDATED);
+	}
+	
+	@Override
+	public Result delete(int id){
+		
+		checkIfInvoiceExists(id);
+		
+		this.invoiceDao.deleteById(id);
+
+		return new SuccessResult(BusinessMessages.INVOICEDELETED);
 	}
 
 	@Override
@@ -116,7 +117,7 @@ public class InvoiceManager implements InvoiceService {
 		
 		idCorrectionForGetById(result, response);
 
-		return new SuccessDataResult<GetInvoiceByIdDto>(response, "Success");
+		return new SuccessDataResult<GetInvoiceByIdDto>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -129,7 +130,7 @@ public class InvoiceManager implements InvoiceService {
 		
 		idCorrectionGetAll(result, response);
 		
-		return new SuccessDataResult<List<ListInvoiceDto>>(response, "Success");
+		return new SuccessDataResult<List<ListInvoiceDto>>(response, BusinessMessages.SUCCESS);
 	}
 
 	@Override
@@ -142,9 +143,35 @@ public class InvoiceManager implements InvoiceService {
 
 		idCorrectionGetAll(result, response);
 
-		return new SuccessDataResult<List<ListInvoiceDto>>(response, "Success");
+		return new SuccessDataResult<List<ListInvoiceDto>>(response, BusinessMessages.SUCCESS);
+	}
+	
+	private void checkInvoiceIfRentalCarExists(int rentalCarId) {
+		
+		if(this.invoiceDao.getByRentalCar_rentalCarId(rentalCarId)!=null) {
+			throw new BusinessException(BusinessMessages.RENTALCARANINVOICED);
+		}	
 	}
 
+	
+	private void checkIfInvoiceNoExists(String invoiceNo) {
+		
+		if(this.invoiceDao.existsByInvoiceNo(invoiceNo)) {
+			throw new BusinessException(BusinessMessages.INVOICENOEXISTS);
+		}
+	}
+
+	private Invoice checkIfInvoiceExists(int id) {
+		
+		Invoice invoice =this.invoiceDao.getByInvoiceId(id);
+		
+		if(invoice==null) {
+			throw new BusinessException(BusinessMessages.INVOICENOTFOUND);
+		}
+		
+		return invoice;
+	}
+	
 	private void updateOperation(Invoice invoice, UpdateInvoiceRequest updateInvoiceRequest) {
 		invoice.setCreateDate(updateInvoiceRequest.getCreateDate());
 
@@ -161,6 +188,7 @@ public class InvoiceManager implements InvoiceService {
 		invoice.setCustomer(customer);
 		invoice.setRentalCar(rentalCar);
 	}
+	
 	private void idCorrectionForGetById(Invoice invoice, GetInvoiceByIdDto getInvoiceByIdDto) {
 
 		getInvoiceByIdDto.setCustomerId(invoice.getCustomer().getCustomerId());
@@ -177,47 +205,6 @@ public class InvoiceManager implements InvoiceService {
 		}
 		return response;
 
-	}
-
-	private Invoice checkIfInvoiceExists(int id) {
-		
-		Invoice invoice =this.invoiceDao.getByInvoiceId(id);
-		
-		if(invoice==null) {
-			throw new BusinessException("Cannot find an invoice with this Id.");
-		}
-		
-		return invoice;
-	}
-	
-	private void checkIfCustomerExists(int customerId) {
-		
-		if(this.customerService.getById(customerId)==null) {
-			throw new BusinessException("Cannot find a customer with this Id.");
-		}
-
-	}
-
-	private void checkIfRentalCarExists(int rentalCarId) {
-		
-		if(this.customerService.getById(rentalCarId)==null) {
-			throw new BusinessException("Cannot find a rentalCar with this Id.");
-		}
-	}
-	
-	private void checkInvoiceIfRentalCarExists(int rentalCarId) {
-		
-		if(this.invoiceDao.getByRentalCar_rentalCarId(rentalCarId)!=null) {
-			throw new BusinessException("There is an invoice for car rental.");
-		}	
-	}
-
-	
-	private void checkIfInvoiceNoExists(String invoiceNo) {
-		
-		if(this.invoiceDao.existsByInvoiceNo(invoiceNo)) {
-			throw new BusinessException("Such an invoice number exists.");
-		}
 	}
 
 	private void invoiceTableSetColumns(Invoice invoice, CreateInvoiceRequest createInvoiceRequest) {
@@ -249,6 +236,7 @@ public class InvoiceManager implements InvoiceService {
 		List<ListOrderedAdditionalServiceDto> listOrderedAdditionalServiceDtos = this.orderedAdditionalServiceService.getOrderedAdditionalServiceByRentalCarId(invoice.getRentalCar().getRentalCarId()).getData();
 		
 		for (int i = 0; i < listOrderedAdditionalServiceDtos.size(); i++) {	
+
 			GetAdditionalServiceByIdDto additionalService = this.additionalServiceService.getByAdditionalServiceId(listOrderedAdditionalServiceDtos.get(i).getAdditionalServiceId()).getData();
 			additionalServiceDailyPrice+=additionalService.getDailyPrice();	
 		}

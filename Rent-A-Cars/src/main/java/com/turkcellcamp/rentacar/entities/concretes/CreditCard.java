@@ -36,6 +36,4 @@ public class CreditCard {
 	@Column(name="card_cvv_number")
 	private int cardCvvNumber;
 	
-	@OneToMany(mappedBy = "creditCard")
-	private List<Payment> payments;
 }

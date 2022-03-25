@@ -31,10 +31,6 @@ public class Payment {
 	
 	@Column(name = "payment_date")
 	private LocalDate paymentDate;
-
-	@ManyToOne
-	@JoinColumn(name="credit_card_id")
-	private CreditCard creditCard;
 	
 	@OneToOne
 	@JoinColumn(name="invoice_id")
