@@ -22,5 +22,5 @@ public interface AdditionalServiceService {
 
 	Result delete(int id) ;
 	
-	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId);
+	DataResult<GetAdditionalServiceByIdDto> getById(int additionalServiceId);
 }

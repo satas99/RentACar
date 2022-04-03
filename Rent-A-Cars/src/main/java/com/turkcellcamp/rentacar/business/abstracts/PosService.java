@@ -4,5 +4,5 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
 public interface PosService {
 	
-	public boolean payments(String cardOwnerName, String cardNumber, int cardCvvNumber);
+	public boolean doPayment(String cardOwnerName, String cardNumber, int cardCvvNumber);
 }

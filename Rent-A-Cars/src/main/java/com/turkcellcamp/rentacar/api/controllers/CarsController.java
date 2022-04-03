@@ -54,7 +54,7 @@ public class CarsController {
 		return this.carService.delete(id);
 	}
 	
-	@GetMapping("/getbyid/{carId}")
+	@GetMapping("/getid/{carId}")
 	public DataResult<GetCarByIdDto> getById(@RequestParam("carId") int carId){
 		return this.carService.getById(carId);
 	}

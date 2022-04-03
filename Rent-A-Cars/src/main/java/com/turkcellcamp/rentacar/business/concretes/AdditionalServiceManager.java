@@ -76,7 +76,7 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 	}
 	
 	@Override
-	public DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(int additionalServiceId){
+	public DataResult<GetAdditionalServiceByIdDto> getById(int additionalServiceId){
 		
 		AdditionalService result = checkIfAdditionalServiceExists(additionalServiceId);
 		GetAdditionalServiceByIdDto response = this.modelMapperService.forDto().map(result, GetAdditionalServiceByIdDto.class);

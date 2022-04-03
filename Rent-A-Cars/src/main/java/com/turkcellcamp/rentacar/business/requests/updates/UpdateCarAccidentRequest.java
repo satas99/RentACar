@@ -1,5 +1,6 @@
 package com.turkcellcamp.rentacar.business.requests.updates;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCarAccidentRequest {
 	
-	@NotNull
+	@NotBlank
 	private String carAccidentDescription;
 }

@@ -37,10 +37,10 @@ public class InvoicesController {
 		this.invoiceService = invoiceService;
 	}
 	
-	@PostMapping("/add")
-	Result add(@RequestBody @Valid CreateInvoiceRequest createInvoiceRequest){
-		return this.invoiceService.add(createInvoiceRequest);
-	}
+//	@PostMapping("/add")
+//	Result add(@RequestBody @Valid CreateInvoiceRequest createInvoiceRequest){
+//		return this.invoiceService.add(createInvoiceRequest);
+//	}
 	@DeleteMapping("/delete")
 	Result delete(@RequestParam("invoiceId") int id){
 		return this.invoiceService.delete(id);
@@ -53,7 +53,7 @@ public class InvoicesController {
 	Result update(@RequestParam("invoiceId") int id, @RequestBody UpdateInvoiceRequest updateInvoiceRequest) {
 		return this.invoiceService.update(id, updateInvoiceRequest);
 	}
-	@GetMapping("/getbyid")
+	@GetMapping("/getid")
 	DataResult<GetInvoiceByIdDto> getByInvoiceId(@RequestParam("invoiceId") int invoiceId){
 		return this.invoiceService.getById(invoiceId);
 	}

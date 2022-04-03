@@ -2,7 +2,7 @@ package com.turkcellcamp.rentacar.business.requests.updates;
 
 import java.time.LocalDate;
 
-
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCarMaintenanceRequest {
 	
-	@NotNull
+	@NotBlank
 	@Size(min=1,max=200)
 	private String description;
 	
-	@NotNull
+	@NotBlank
 	private LocalDate returnDate;
 
 }

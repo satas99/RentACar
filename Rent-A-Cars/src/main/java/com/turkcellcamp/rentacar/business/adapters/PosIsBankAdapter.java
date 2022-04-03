@@ -12,7 +12,7 @@ import com.turkcellcamp.rentacar.business.outServices.Isbank;
 public class PosIsBankAdapter implements PosService {
 
 	@Override
-	public boolean payments(String cardOwnerName, String cardNumber, int cardCvvNumber) {
+	public boolean doPayment(String cardOwnerName, String cardNumber, int cardCvvNumber) {
 		Isbank ısBank = new Isbank();
 		
 		ısBank.makePayment(cardOwnerName, cardNumber, cardCvvNumber);

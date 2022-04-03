@@ -18,6 +18,7 @@ import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetRentalCarByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListRentalCarDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateRentalCarRequest;
+import com.turkcellcamp.rentacar.business.requests.updates.UpdateLateDeliveriesRentalCarRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateRentalCarRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
@@ -33,14 +34,19 @@ public class RentalCarsController {
 		this.rentalCarService = rentalCarService;
 	}
 	
-	@PostMapping("/add")
-	public Result add(@RequestBody @Valid CreateRentalCarRequest createRentalCarRequest){
-		return this.rentalCarService.add(createRentalCarRequest);
-	}
-	
+//	@PostMapping("/add")
+//	public Result add(@RequestBody @Valid CreateRentalCarRequest createRentalCarRequest){
+//		return this.rentalCarService.add(createRentalCarRequest);
+//	}
+//	
 	@PutMapping("/update")
 	public Result update(@RequestParam("rentalId") int id,@RequestBody @Valid UpdateRentalCarRequest updateRentalCarRequest){
 		return this.rentalCarService.update(id,updateRentalCarRequest);
+	}
+	
+	@PutMapping("/lateDeliveriesUpdate")
+	public Result lateDeliveriesUpdate(@RequestParam("rentalId") int id, @RequestBody @Valid UpdateLateDeliveriesRentalCarRequest updateLateDeliveriesRentalCarRequest) {
+		return this.rentalCarService.lateDeliveriesUpdate(id, updateLateDeliveriesRentalCarRequest);
 	}
 	
 	@DeleteMapping("/delete")

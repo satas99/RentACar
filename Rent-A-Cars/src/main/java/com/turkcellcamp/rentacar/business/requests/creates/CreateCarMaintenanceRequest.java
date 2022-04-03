@@ -3,7 +3,9 @@ package com.turkcellcamp.rentacar.business.requests.creates;
 
 
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -14,11 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCarMaintenanceRequest {
-	@NotNull
+	
+	@NotBlank
 	@Size(min=2,max=200)
 	private String description;
 	
-	@NotNull
+	@NotBlank
+	@Positive
 	private int carId;
 	
 

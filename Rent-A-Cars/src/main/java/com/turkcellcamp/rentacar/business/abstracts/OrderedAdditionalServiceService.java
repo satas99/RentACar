@@ -13,7 +13,7 @@ import com.turkcellcamp.rentacar.core.utilities.results.Result;
 
 public interface OrderedAdditionalServiceService {
 	
-	Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest);
+	void add(List<Integer> additionalServiceIds, int rentalCarId) ;
 
 	Result delete(int id);
 

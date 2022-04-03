@@ -13,10 +13,12 @@ public interface IndividualCustomerService {
 	DataResult<List<ListIndividualCustomerDto>> getAll();
 
 	Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest);
-	
-	DataResult<GetIndividualCustomerByIdDto> getById(int id) ;
-	
+
+	DataResult<GetIndividualCustomerByIdDto> getById(int id);
+
 	Result delete(int id);
 
 	Result update(int id, UpdateIndividualCustomerRequest updateindividualCustomerRequest);
+
+	boolean checkIndividualCustomerIfForRental(int id);
 }

@@ -54,7 +54,5 @@ public class Invoice {
 	@ManyToOne
 	@JoinColumn(name ="rental_car_id")
 	private RentalCar rentalCar;
-	
-	@OneToOne(mappedBy = "invoice")
-	private Payment payment;
+
 }

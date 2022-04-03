@@ -134,6 +134,13 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		}
 		return true;
 	}
+	public boolean checkIndividualCustomerIfForRental(int id) {
+		
+		if(this.individualCustomerDao.getByIndividualCustomerId(id)==null) {
+			return false;
+		}
+		return true;
+	}
 
 	
 	

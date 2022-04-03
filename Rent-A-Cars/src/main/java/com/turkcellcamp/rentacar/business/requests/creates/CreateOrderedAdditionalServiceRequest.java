@@ -1,5 +1,11 @@
 package com.turkcellcamp.rentacar.business.requests.creates;
 
+import java.util.List;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateOrderedAdditionalServiceRequest {
+	
+	@Positive
     private int AdditionalServiceId;
+	
+	@NotBlank
     private int rentalCarId;
 }

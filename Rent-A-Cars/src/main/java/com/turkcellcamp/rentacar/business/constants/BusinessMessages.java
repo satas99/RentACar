@@ -49,6 +49,7 @@ public class BusinessMessages {
 	public static final String CORPORATECUSTOMERNOTFOUND = "Cannot find a corporate customer with this Id";
 	
 	public static final String CREDİTCARDADDED = "CreditCard.Added";
+	public static final String CREDİTCARDEXİSTS = "Such a credit card exists";
 
 	public static final String INDIVIDUALCUSTOMERADDED = "IndividualCustomer.Added";
 	public static final String INDIVIDUALCUSTOMERUPDATED = "IndividualCustomer.Updated";
@@ -81,6 +82,9 @@ public class BusinessMessages {
 	public static final String RENTALCARINMAINTENANCE = "The car cannot be sent for rent because it is on maintenance";
 	public static final String RENTALCARINRENT = "The car is still in rental";
 	public static final String RENTALCARISRENTED = "The rented car with this id does not exist";
+	public static final String RENTALCARFAİLRETURNDATE = "The new return date cannot be before the old return date";
+	public static final String RENTALCARRENTDATEFAİLRETURNDATE = "Return date cannot be earlier than rental date";
+	
 
 	public static final String USERADDED = "User.Added";
 	public static final String USERUPDATED = "User.Updated";

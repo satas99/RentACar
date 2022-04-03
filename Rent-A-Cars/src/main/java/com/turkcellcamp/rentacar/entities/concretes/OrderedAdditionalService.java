@@ -33,9 +33,7 @@ public class OrderedAdditionalService {
     @ManyToOne()
     @JoinColumn(name = "rental_car_id")
     private RentalCar rentalCar;
-    
-	@OneToOne(mappedBy = "orderedAdditionalService")
-	private Payment payment;
+
 
 
 

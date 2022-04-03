@@ -141,6 +141,13 @@ public class CorporateCustomerManager implements CorporateCustomerService {
 		}
 		return true;
 	}
+	public boolean checkCorporateCustomerIfForRental(int id) {
+		
+		if(this.corporateCustomerDao.getByCorporateCustomerId(id)==null) {
+			return false;
+		}
+		return true;
+	}
 
 
 }

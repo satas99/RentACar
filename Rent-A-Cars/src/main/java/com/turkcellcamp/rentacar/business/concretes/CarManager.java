@@ -16,6 +16,7 @@ import com.turkcellcamp.rentacar.business.abstracts.ColorService;
 import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarByDailyPriceDto;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetCarByIdDto;
+import com.turkcellcamp.rentacar.business.dtos.gets.GetColorByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListCarDto;
 import com.turkcellcamp.rentacar.business.requests.creates.CreateCarRequest;
 import com.turkcellcamp.rentacar.business.requests.updates.UpdateCarRequest;
@@ -27,6 +28,7 @@ import com.turkcellcamp.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.SuccessResult;
 import com.turkcellcamp.rentacar.dataaccess.abstracts.CarDao;
 import com.turkcellcamp.rentacar.entities.concretes.Car;
+import com.turkcellcamp.rentacar.entities.concretes.Color;
 
 @Service
 public class CarManager implements CarService {
@@ -58,12 +60,12 @@ public class CarManager implements CarService {
 
 	@Override
 	public Result add(CreateCarRequest createCarRequest){
+		
+		checkIfBrandExists(createCarRequest.getBrandId());
+		
+		checkIfColorExists(createCarRequest.getColorId());
 
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
-		
-		checkIfBrandExists(car.getBrand().getBrandId());
-		
-		checkIfColorExists(car.getColor().getColorId());
 		
 		this.carDao.save(car);
 		
@@ -155,12 +157,8 @@ public class CarManager implements CarService {
 		return true;
 	}
 
-	private boolean checkIfColorExists(int id){
-		
-		if (this.colorService.getById(id)==null) {
-			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
-		}
-		return true;
+	private void checkIfColorExists(int id){
+		this.colorService.getById(id);
 	}
 
 	private void updateOperation(Car car, UpdateCarRequest updateCarRequest) {

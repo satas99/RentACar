@@ -39,10 +39,10 @@ public class OrderedAdditionalServicesController {
 		return this.orderedAdditionalServiceService.getAll();
 	}
 
-	@PostMapping("/add")
-	Result add(@RequestBody CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
-		return this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
-	}
+//	@PostMapping("/add")
+//	Result add(@RequestBody CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest){
+//		return this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
+//	}
 
 	@DeleteMapping("/delete")
 	Result delete(@RequestParam("orderedAdditionalServiceId") int id){

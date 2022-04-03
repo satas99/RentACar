@@ -104,7 +104,7 @@ public class ColorManager implements ColorService {
 		
 		Color color = this.colorDao.getByColorId(colorId);
 		
-		if (color != null) {
+		if (color == null) {
 			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
 		}
 		return color;

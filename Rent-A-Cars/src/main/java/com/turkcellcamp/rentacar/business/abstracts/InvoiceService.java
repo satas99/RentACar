@@ -10,10 +10,13 @@ import com.turkcellcamp.rentacar.business.requests.updates.UpdateInvoiceRequest;
 import com.turkcellcamp.rentacar.core.exceptions.BusinessException;
 import com.turkcellcamp.rentacar.core.utilities.results.DataResult;
 import com.turkcellcamp.rentacar.core.utilities.results.Result;
+import com.turkcellcamp.rentacar.entities.concretes.Invoice;
 
 public interface InvoiceService {
 	
-	Result add(CreateInvoiceRequest createInvoiceRequest);
+	Invoice addForIndividualCustomer(CreateInvoiceRequest createInvoiceRequest);
+	
+	Invoice addForCorporateCustomer(CreateInvoiceRequest createInvoiceRequest);
 
 	Result delete(int id);
 

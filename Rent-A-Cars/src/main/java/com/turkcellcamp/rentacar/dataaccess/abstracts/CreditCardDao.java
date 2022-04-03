@@ -7,4 +7,6 @@ import com.turkcellcamp.rentacar.entities.concretes.CreditCard;
 public interface CreditCardDao extends JpaRepository<CreditCard, Integer> {
 	
 	CreditCard getByCreditCardId(int id);
+	
+	boolean existsByCardNumber(String cardNumber);
 }	

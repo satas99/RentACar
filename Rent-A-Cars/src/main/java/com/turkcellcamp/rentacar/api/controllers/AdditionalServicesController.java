@@ -56,6 +56,6 @@ public class AdditionalServicesController {
 	}
 	@GetMapping("/getid/{additionalServiceId}")
 	DataResult<GetAdditionalServiceByIdDto> getByAdditionalServiceId(@RequestParam("additionalServiceId") @Valid int additionalServiceId){
-		return this.additionalServiceService.getByAdditionalServiceId(additionalServiceId);
+		return this.additionalServiceService.getById(additionalServiceId);
 	}
 }

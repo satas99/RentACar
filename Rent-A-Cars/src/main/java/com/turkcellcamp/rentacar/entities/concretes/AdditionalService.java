@@ -42,4 +42,5 @@ public class AdditionalService {
     @OneToMany(mappedBy = "additionalService")
     private List<OrderedAdditionalService> orderedAdditionalServices;
 
+
 }

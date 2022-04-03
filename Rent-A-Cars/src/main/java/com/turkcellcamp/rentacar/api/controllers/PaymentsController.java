@@ -41,7 +41,7 @@ public class PaymentsController {
 		return this.paymentService.add(rememberMe,createPaymentRequest);
 	}
 
-	@GetMapping("/getbyid/{paymentId}")
+	@GetMapping("/getid/{paymentId}")
 	DataResult<GetPaymentByIdDto> getById(@RequestParam("paymentId") int paymentId){
 		return this.paymentService.getById(paymentId);
 	}
