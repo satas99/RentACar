@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateLateDeliveriesRentalCarRequest {
-	
 	private UpdateRentalCarRequest updateRentalCarRequest;
 	
 	private CreateCreditCardRequest createCreditCardRequest;

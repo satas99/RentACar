@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRentalCarRequest {
-
 	@FutureOrPresent
 	private LocalDate returnDate;
 

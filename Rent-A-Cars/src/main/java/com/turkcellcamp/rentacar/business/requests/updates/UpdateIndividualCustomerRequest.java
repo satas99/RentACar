@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateIndividualCustomerRequest {
-	
 	@NotNull
 	private String firstName;
 	

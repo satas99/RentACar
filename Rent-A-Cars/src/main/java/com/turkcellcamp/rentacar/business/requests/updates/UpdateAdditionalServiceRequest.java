@@ -1,6 +1,7 @@
 package com.turkcellcamp.rentacar.business.requests.updates;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class UpdateAdditionalServiceRequest {
 	@NotBlank
 	private String serviceName;
-	@NotBlank
+	
+	@Positive
 	private double dailyPrice;
 }

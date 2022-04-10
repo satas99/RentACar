@@ -18,7 +18,6 @@ public class CreateAdditionalServiceRequest {
 	@NotBlank
     private String additionalServiceName;
 	
-	@NotBlank
 	@Positive
     private double dailyPrice;
 }

@@ -17,8 +17,8 @@ public class CreateCarAccidentRequest {
 	@NotBlank
 	@Size(min=2,max=200)
 	private String carAccidentDescription;
-
-	@NotBlank
+	
+	@NotNull
 	@Positive
 	private int carId;
 }

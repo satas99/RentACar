@@ -16,6 +16,8 @@ import com.turkcellcamp.rentacar.business.abstracts.CarService;
 import com.turkcellcamp.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcellcamp.rentacar.business.abstracts.CustomerService;
 import com.turkcellcamp.rentacar.business.abstracts.IndividualCustomerService;
+import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
+import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.abstracts.PaymentService;
 import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
 import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
@@ -50,11 +52,12 @@ public class RentalCarManager implements RentalCarService {
 	private PaymentService paymentService;
 	private IndividualCustomerService individualCustomerService;
 	private CorporateCustomerService corporateCustomerService;
+	private InvoiceService invoiceService;
+	private OrderedAdditionalServiceService orderedAdditionalServiceService;
 
 	@Autowired
 	@Lazy
-	public RentalCarManager(RentalCarDao rentalCarDao, CarMaintenanceService carMaintenanceService, CarService carService, ModelMapperService modelMapperService, CustomerService customerService, PaymentService paymentService,IndividualCustomerService individualCustomerService, CorporateCustomerService corporateCustomerService) {
-
+	public RentalCarManager(RentalCarDao rentalCarDao, CarMaintenanceService carMaintenanceService,CarService carService, ModelMapperService modelMapperService, CustomerService customerService,PaymentService paymentService, IndividualCustomerService individualCustomerService,CorporateCustomerService corporateCustomerService, InvoiceService invoiceService,OrderedAdditionalServiceService orderedAdditionalServiceService) {
 		this.rentalCarDao = rentalCarDao;
 		this.carMaintenanceService = carMaintenanceService;
 		this.carService = carService;
@@ -63,6 +66,8 @@ public class RentalCarManager implements RentalCarService {
 		this.paymentService = paymentService;
 		this.individualCustomerService = individualCustomerService;
 		this.corporateCustomerService = corporateCustomerService;
+		this.invoiceService = invoiceService;
+		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 	}
 
 	@Override
@@ -182,7 +187,9 @@ public class RentalCarManager implements RentalCarService {
 	public Result delete(int id) {
 
 		checkIfRentalExists(id);
-
+		
+		checkIfThisRentalCarIsUsedInAnotherTable(id);
+		
 		this.rentalCarDao.deleteById(id);
 
 		return new SuccessResult(BusinessMessages.RENTALCARDELETED);
@@ -219,6 +226,21 @@ public class RentalCarManager implements RentalCarService {
 		
 		return new SuccessDataResult<List<ListRentalCarDto>>(response, BusinessMessages.SUCCESS);
 	}
+	
+	@Override
+	public DataResult<List<ListRentalCarDto>> getRentalByCustomerId(int id){
+		
+		List<RentalCar> result = this.rentalCarDao.getByCustomer_customerId(id);
+		
+		List<ListRentalCarDto> response = result.stream()
+				.map(rentalCar -> this.modelMapperService.forDto().map(rentalCar, ListRentalCarDto.class))
+				.collect(Collectors.toList());
+		
+		idCorrectionForGetAll(result,response);
+		
+		return new SuccessDataResult<List<ListRentalCarDto>>(response, BusinessMessages.SUCCESS);
+	}
+	
 	
 	private CreateCreditCardRequest createCreditCard(UpdateLateDeliveriesRentalCarRequest updateLateDeliveriesRentalCarRequest) {
 		
@@ -384,6 +406,16 @@ public class RentalCarManager implements RentalCarService {
 			
 			if(createRentalCarRequest.getReturnDate().isBefore(createRentalCarRequest.getRentDate())) {
 				throw new BusinessException(BusinessMessages.RENTALCARRENTDATEFAİLRETURNDATE);	
+			}
+		}
+		
+		private void checkIfThisRentalCarIsUsedInAnotherTable(int id) {
+			
+			if(!this.invoiceService.getInvoiceByRentalCar(id).getData().isEmpty()) {
+				throw new BusinessException(BusinessMessages.RENTALCARISUSEDININVOICETABLE);
+			}
+			else if(!this.orderedAdditionalServiceService.getOrderedAdditionalServiceByRentalCarId(id).getData().isEmpty()) {
+				throw new BusinessException(BusinessMessages.RENTALCARISUSEDINORDEREDADDITIONALSERVİCETABLE);
 			}
 		}
 

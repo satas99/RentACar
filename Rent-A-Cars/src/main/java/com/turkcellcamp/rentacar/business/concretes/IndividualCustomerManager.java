@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.IndividualCustomerService;
+import com.turkcellcamp.rentacar.business.abstracts.InvoiceService;
+import com.turkcellcamp.rentacar.business.abstracts.RentalCarService;
 import com.turkcellcamp.rentacar.business.abstracts.UserService;
 import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetIndividualCustomerByIdDto;
@@ -30,12 +32,16 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 	private IndividualCustomerDao individualCustomerDao;
 	private ModelMapperService modelMapperService;
 	private UserService userService;
+	private RentalCarService rentalCarService;
+	private InvoiceService invoiceService;
 	
 	@Autowired
-	public IndividualCustomerManager(IndividualCustomerDao individualCustomerDao,ModelMapperService modelMapperService,UserService userService) {
+	public IndividualCustomerManager(IndividualCustomerDao individualCustomerDao,ModelMapperService modelMapperService,UserService userService, RentalCarService rentalCarService, InvoiceService invoiceService) {
 		this.individualCustomerDao = individualCustomerDao;
 		this.modelMapperService = modelMapperService;
-		this.userService=userService;
+		this.userService = userService;
+		this.rentalCarService = rentalCarService;
+		this.invoiceService = invoiceService;
 	}
 
 	@Override
@@ -82,6 +88,8 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 	public Result delete(int id) throws BusinessException {
 		
 		checkIfIndividualCustomerExists(id);
+		
+		checkIfThisIndividualCustomerIsUsedInAnotherTable(id);
 		
 		this.individualCustomerDao.deleteById(id);
 		
@@ -141,7 +149,16 @@ public class IndividualCustomerManager implements IndividualCustomerService {
 		}
 		return true;
 	}
-
+	
+	private void checkIfThisIndividualCustomerIsUsedInAnotherTable(int id) {
+		
+		if(!this.invoiceService.getInvoiceByCustomer(id).getData().isEmpty()) {
+			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERISUSEDININVOICETABLE);
+		}
+		else if(!this.rentalCarService.getRentalByCustomerId(id).getData().isEmpty()){
+			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERISUSEDINRENTALCARTABLE);
+		}
+	}
 	
 	
 }

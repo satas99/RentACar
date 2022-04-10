@@ -29,4 +29,6 @@ public interface InvoiceService {
 	DataResult<List<ListInvoiceDto>> getByDateOfBetween (LocalDate startDate, LocalDate finishDate);
 	
 	DataResult<List<ListInvoiceDto>> getInvoiceByCustomer(int id);
+
+	DataResult<List<ListInvoiceDto>> getInvoiceByRentalCar(int id);
 }

@@ -16,11 +16,11 @@ public class CreateInvoiceRequest {
 	@NotBlank
 	private String invoiceNo;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int customerId;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int rentalCarId;
 

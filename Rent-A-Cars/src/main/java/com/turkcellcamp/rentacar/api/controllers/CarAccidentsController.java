@@ -52,12 +52,12 @@ public class CarAccidentsController {
 		return this.carAccidentService.getAll();
 	}
 	
-	@GetMapping("/getcaraccidentbyid")
+	@GetMapping("/getCarAccidentById")
 	public DataResult<GetCarAccidentByIdDto> getById(@RequestParam("carAccidentId") @Valid int carAccidentId) {
 		return this.carAccidentService.getById(carAccidentId);
 	}
 	
-	@GetMapping("/getcaraccidentsbycarid")
+	@GetMapping("/getCarAccidentsByCarId")
 	public DataResult<List<ListCarAccidentDto>> getCarAccidentsByCarId(@RequestParam("carId") @Valid int carId){
 		return this.carAccidentService.getCarAccidentsByCarId(carId);
 	}

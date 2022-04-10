@@ -58,10 +58,14 @@ public class OrderedAdditionalServicesController {
 	DataResult<GetOrderedAdditionalServiceByIdDto> getByOrderedAdditionalServiceId(@RequestParam("orderedAdditionalServiceId") int orderedadditionalServiceId){
 		return this.orderedAdditionalServiceService.getById(orderedadditionalServiceId);
 	}
-	@GetMapping("/getOrderedAdditionalServiceByRentalCarId/{rentalCarId}")
+	@GetMapping("/getOrderedAdditionalServicesByRentalCarId/{rentalCarId}")
 	DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByRentalCarId(@RequestParam("rentalCarId") int rentalCarId){
-		return this.orderedAdditionalServiceService.getOrderedAdditionalServiceByRentalCarId(rentalCarId);
-		
+		return this.orderedAdditionalServiceService.getOrderedAdditionalServiceByRentalCarId(rentalCarId);	
+	}
+	
+	@GetMapping("/getOrderedAdditionalServicesByAdditionalServiceId/{additionalServiceId}")
+	public DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByAdditionalServiceId(@RequestParam("additionalServiceId") int additionalServiceId){
+		return this.orderedAdditionalServiceService.getOrderedAdditionalServiceByAdditionalServiceId(additionalServiceId);
 	}
 
 }

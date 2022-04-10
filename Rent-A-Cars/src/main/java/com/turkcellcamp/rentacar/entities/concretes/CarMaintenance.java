@@ -27,10 +27,8 @@ public class CarMaintenance {
 	@Column(name="car_maintenance_id")
 	private int carMaintenanceId;
 	
-	
 	@Column(name="car_maintenance_description")
 	private String description;
-	
 	
 	@Column(name="car_maintenance_returndate")
 	private LocalDate returnDate; 

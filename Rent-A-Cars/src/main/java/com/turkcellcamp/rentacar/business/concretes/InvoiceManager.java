@@ -162,6 +162,19 @@ public class InvoiceManager implements InvoiceService {
 		return new SuccessDataResult<List<ListInvoiceDto>>(response, BusinessMessages.SUCCESS);
 	}
 
+	@Override
+	public DataResult<List<ListInvoiceDto>> getInvoiceByRentalCar(int id) {
+
+		List<Invoice> result = this.invoiceDao.getByRentalCar_rentalCarId(id);
+		List<ListInvoiceDto> response = result.stream()
+				.map(invoice -> this.modelMapperService.forDto().map(invoice, ListInvoiceDto.class))
+				.collect(Collectors.toList());
+
+		idCorrectionForGetAll(result, response);
+
+		return new SuccessDataResult<List<ListInvoiceDto>>(response, BusinessMessages.SUCCESS);
+	}
+
 	private Invoice checkIfInvoiceExists(int id) {
 		
 		Invoice invoice =this.invoiceDao.getByInvoiceId(id);
@@ -175,7 +188,6 @@ public class InvoiceManager implements InvoiceService {
 	
 	private void updateOperation(Invoice invoice, UpdateInvoiceRequest updateInvoiceRequest) {
 		invoice.setCreateDate(updateInvoiceRequest.getCreateDate());
-
 	}
 
 	private void idCorrectionForAdd(Invoice invoice, CreateInvoiceRequest createInvoiceRequest) {

@@ -64,6 +64,11 @@ public class RentalCarsController {
 		return this.rentalCarService.getRentalByCarId(carId);
 	}
 	
+	@GetMapping("/getRentalByCustomerId/{customerId}")
+	DataResult<List<ListRentalCarDto>> getRentalByCustomerId(@RequestParam("customerId") @Valid int customerId){
+		return this.rentalCarService.getRentalByCustomerId(customerId);
+	}
+	
 	@GetMapping("/getid/{rentalId}")
 	DataResult<GetRentalCarByIdDto> getByRentalId(@RequestParam("rentalId") @Valid int rentalId){
 		return this.rentalCarService.getById(rentalId);

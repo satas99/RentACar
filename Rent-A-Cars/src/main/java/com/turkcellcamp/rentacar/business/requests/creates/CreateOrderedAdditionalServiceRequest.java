@@ -18,6 +18,7 @@ public class CreateOrderedAdditionalServiceRequest {
 	@Positive
     private int AdditionalServiceId;
 	
-	@NotBlank
+	@NotNull
+	@Positive
     private int rentalCarId;
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.internal.bytebuddy.dynamic.scaffold.MethodRegistry.Handler.ForAbstractMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.AdditionalServiceService;
@@ -42,8 +43,8 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	private AdditionalServiceService additionalServiceService;
 
 	@Autowired
+	@Lazy
 	public OrderedAdditionalServiceManager(OrderedAdditionalServiceDao orderedAdditionalServiceDao,ModelMapperService modelMapperService, RentalCarService rentalCarService,AdditionalServiceService additionalServiceService) {
-
 		this.orderedAdditionalServiceDao = orderedAdditionalServiceDao;
 		this.modelMapperService = modelMapperService;
 		this.rentalCarService = rentalCarService;
@@ -128,6 +129,17 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	public DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByRentalCarId(int rentalCarId) {
 		
 		List<OrderedAdditionalService> result = this.orderedAdditionalServiceDao.getByRentalCar_rentalCarId(rentalCarId);
+		List<ListOrderedAdditionalServiceDto> response = result.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService, ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
+
+		idCorrectionForGetAll(result,response);
+		
+		return new SuccessDataResult<List<ListOrderedAdditionalServiceDto>>(response, BusinessMessages.SUCCESS);
+	}
+	
+	@Override
+	public DataResult<List<ListOrderedAdditionalServiceDto>> getOrderedAdditionalServiceByAdditionalServiceId(int additionalServiceId) {
+		
+		List<OrderedAdditionalService> result = this.orderedAdditionalServiceDao.getByAdditionalService_AdditionalServiceId(additionalServiceId);
 		List<ListOrderedAdditionalServiceDto> response = result.stream().map(orderedAdditionalService -> this.modelMapperService.forDto().map(orderedAdditionalService, ListOrderedAdditionalServiceDto.class)).collect(Collectors.toList());
 
 		idCorrectionForGetAll(result,response);

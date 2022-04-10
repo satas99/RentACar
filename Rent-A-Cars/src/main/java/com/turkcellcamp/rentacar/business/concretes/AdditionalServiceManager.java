@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcellcamp.rentacar.business.abstracts.AdditionalServiceService;
+import com.turkcellcamp.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetAdditionalServiceByIdDto;
 import com.turkcellcamp.rentacar.business.dtos.lists.ListAdditionalServiceDto;
@@ -23,15 +24,15 @@ import com.turkcellcamp.rentacar.entities.concretes.AdditionalService;
 
 @Service
 public class AdditionalServiceManager implements AdditionalServiceService {
-	
-	private final AdditionalServiceDao additionalServiceDao;
-	private final ModelMapperService modelMapperService;
+	private AdditionalServiceDao additionalServiceDao;
+	private ModelMapperService modelMapperService;
+	private OrderedAdditionalServiceService orderedAdditionalServiceService;
 
 	@Autowired
-	public AdditionalServiceManager(AdditionalServiceDao additionalServiceDao, ModelMapperService modelMapperService) {
-		
+	public AdditionalServiceManager(AdditionalServiceDao additionalServiceDao, ModelMapperService modelMapperService, OrderedAdditionalServiceService orderedAdditionalServiceService) {
 		this.additionalServiceDao = additionalServiceDao;
 		this.modelMapperService = modelMapperService;
+		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 	}
 
 	@Override
@@ -70,6 +71,8 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 		
 		checkIfAdditionalServiceExists(id);
 		
+		checkIfThisAdditionalServiceIsUsedInAnotherTable(id);
+		
 		this.additionalServiceDao.deleteById(id);
 		
 		return new SuccessResult(BusinessMessages.ADDITIONALSERVICEDELETED);
@@ -98,6 +101,13 @@ public class AdditionalServiceManager implements AdditionalServiceService {
 			throw new BusinessException(BusinessMessages.ADDITIONALSERVICENOTFOUND);
 		}
 		return additionalService;
+	}
+	
+	private void checkIfThisAdditionalServiceIsUsedInAnotherTable(int id) {
+		
+		if(!this.orderedAdditionalServiceService.getOrderedAdditionalServiceByAdditionalServiceId(id).getData().isEmpty()) {
+			throw new BusinessException(BusinessMessages.ADDITIONALSERVİCEISUSEDINORDEREDADDITIONALSERVİCETABLE);
+		}
 	}
 
 }

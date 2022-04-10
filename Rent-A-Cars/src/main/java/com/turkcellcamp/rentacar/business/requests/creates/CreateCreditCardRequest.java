@@ -25,6 +25,6 @@ public class CreateCreditCardRequest {
 	@NotBlank
 	private String cardNumber;
 	
-	@NotBlank
+	@NotNull
 	private int cardCvvNumber;
 }

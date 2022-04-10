@@ -59,18 +59,28 @@ public class CarsController {
 		return this.carService.getById(carId);
 	}
 	
+	@GetMapping("/getCarsByBrandId/{brandId}")
+	public DataResult<List<ListCarDto>> getByBrand_BrandId(@RequestParam("brandId") @Valid int id){
+		return this.carService.getByBrand_BrandId(id);
+	}
+	
+	@GetMapping("/getCarsByColorId/{colorId}")
+	public DataResult<List<ListCarDto>> getByColor_ColorId(@RequestParam("colorId") @Valid int id){
+		return this.carService.getByColor_ColorId(id);
+	}
+
 	@GetMapping("/getCarByDailyPrice")
-	DataResult <List<GetCarByDailyPriceDto>> getCarByDailyPrice(@RequestParam @Valid double dailyPrice){
+	public DataResult <List<GetCarByDailyPriceDto>> getCarByDailyPrice(@RequestParam @Valid double dailyPrice){
 		return this.carService.getCarByDailyPrice(dailyPrice);
 	}
 	
 	@GetMapping("/getAllPaged")
-	DataResult <List<ListCarDto>> getAllPaged(@RequestParam @Valid int pageNumber, @RequestParam @Valid int pageSize){
+	public DataResult <List<ListCarDto>> getAllPaged(@RequestParam @Valid int pageNumber, @RequestParam @Valid int pageSize){
 		return this.carService.getAllPaged(pageNumber, pageSize);
 	}
 	
 	@GetMapping("/getAllSorted")
-	DataResult <List<ListCarDto>> getAllSorted(){
+	public DataResult <List<ListCarDto>> getAllSorted(){
 		return this.carService.getAllSorted();
 	}
 }

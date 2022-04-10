@@ -23,15 +23,14 @@ public class CreateCarRequest {
 	@NotBlank
 	private String description;
 	
-	@NotBlank
 	@Positive
 	private double kilometerInfo;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int brandId;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int colorId;
 }

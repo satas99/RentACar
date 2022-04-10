@@ -27,6 +27,8 @@ public interface RentalCarService {
 	DataResult<List<ListRentalCarDto>> getAll();
 
 	DataResult<List<ListRentalCarDto>> getRentalByCarId(int carId);
+	
+	DataResult<List<ListRentalCarDto>> getRentalByCustomerId(int id);
 
 	DataResult<GetRentalCarByIdDto> getById(int rentalCarId);
 }

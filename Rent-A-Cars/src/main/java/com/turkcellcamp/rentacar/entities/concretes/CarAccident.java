@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @Table(name="car_accidents")
 @Entity
 public class CarAccident {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="car_accident_id")

@@ -24,7 +24,6 @@ import com.turkcellcamp.rentacar.entities.concretes.CarAccident;
 
 @Service
 public class CarAccidentManager implements CarAccidentService {
-
 	private CarAccidentDao carAccidentDao;
 	private ModelMapperService modelMapperService;
 	private CarService carService;

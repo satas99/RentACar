@@ -13,12 +13,14 @@ public class BusinessMessages {
 	public static final String ADDITIONALSERVICEUPDATED = "AdditionalService.Updated";
 	public static final String ADDITIONALSERVICEDELETED = "AdditonalService.Deleted";
 	public static final String ADDITIONALSERVICENOTFOUND = "Cannot find an additional service with this Id";
+	public static final String ADDITIONALSERVİCEISUSEDINORDEREDADDITIONALSERVİCETABLE = "Additional service is used in ordered additional service table";
 
 	public static final String BRANDADDED = "Brand.Added";
 	public static final String BRANDUPDATED = "Brand.Updated";
 	public static final String BRANDDELETED = "Brand.Deleted";
 	public static final String BRANDNOTFOUND = "Cannot find a brand with this Id";
 	public static final String BRANDEXISTS = "Such a brand exists";
+	public static final String BRANDISUSEDINCARTABLE = "Brand is used in car table";
 	
 	public static final String CARACCİDENTADDED = "CarAccident.Added";
 	public static final String CARACCİDENTUPDATED = "CarAccident.Updated";
@@ -36,17 +38,23 @@ public class BusinessMessages {
 	public static final String CARUPDATED = "Car.Updated";
 	public static final String CARDELETED = "Car.Deleted";
 	public static final String CARNOTFOUND = "Cannot find a car with this Id";
+	public static final String CARISUSEDINRENTALCARTABLE = "Car is used in rental car table";
+	public static final String CARISUSEDINCARACCİDENTTABLE = "Car is used in car accident table";
+	public static final String CARISUSEDINCARMAİNTENANCETABLE = "Car is used in car maintenance table";
 
 	public static final String COLORADDED = "Color.Added";
 	public static final String COLORUPDATED = "Color.Updated";
 	public static final String COLORDELETED = "Color.Deleted";
 	public static final String COLOREXISTS = "Such a color exists";
 	public static final String COLORNOTFOUND = "Cannot find a color with this Id";
+	public static final String COLORISUSEDINCARTABLE = "Color is used in car table";
 
 	public static final String CORPORATECUSTOMERADDED = "CorporateCustomer.Added";
 	public static final String CORPORATECUSTOMERUPDATED = "CorporateCustomer.Updated";
 	public static final String CORPORATECUSTOMERDELETED = "CorporateCustomer.Deleted";
 	public static final String CORPORATECUSTOMERNOTFOUND = "Cannot find a corporate customer with this Id";
+	public static final String CORPORATECUSTOMERISUSEDINRENTALCARTABLE = "Corporate customer is used in rental car table";
+	public static final String CORPORATECUSTOMERISUSEDININVOICETABLE = "Corporate customer is used in invoice table";
 	
 	public static final String CREDİTCARDADDED = "CreditCard.Added";
 	public static final String CREDİTCARDEXİSTS = "Such a credit card exists";
@@ -55,6 +63,8 @@ public class BusinessMessages {
 	public static final String INDIVIDUALCUSTOMERUPDATED = "IndividualCustomer.Updated";
 	public static final String INDIVIDUALCUSTOMERDELETED = "IndividualCustomer.Deleted";
 	public static final String INDIVIDUALCUSTOMERNOTFOUND = "Cannot find a individual customer with this Id";
+	public static final String INDIVIDUALCUSTOMERISUSEDINRENTALCARTABLE = "Individual customer is used in rental car table";
+	public static final String INDIVIDUALCUSTOMERISUSEDININVOICETABLE = "Individual customer is used in invoice table";
 
 	public static final String CUSTOMERNOTFOUND = "Cannot find a customer with this Id";
 
@@ -84,6 +94,8 @@ public class BusinessMessages {
 	public static final String RENTALCARISRENTED = "The rented car with this id does not exist";
 	public static final String RENTALCARFAİLRETURNDATE = "The new return date cannot be before the old return date";
 	public static final String RENTALCARRENTDATEFAİLRETURNDATE = "Return date cannot be earlier than rental date";
+	public static final String RENTALCARISUSEDININVOICETABLE = "Rental car is used in invoice table";
+	public static final String RENTALCARISUSEDINORDEREDADDITIONALSERVİCETABLE = "Rental car is used in ordered additional service table";
 	
 
 	public static final String USERADDED = "User.Added";

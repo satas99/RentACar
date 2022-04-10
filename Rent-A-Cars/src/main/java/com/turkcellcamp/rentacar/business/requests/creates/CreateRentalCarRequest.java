@@ -20,27 +20,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRentalCarRequest {
-	@NotBlank
+	@NotNull
 	@FutureOrPresent
 	private LocalDate rentDate;
 	
-	@NotBlank
+	@NotNull
 	@FutureOrPresent
 	private LocalDate returnDate;
 	
 	@Positive
-	@NotBlank
+	@NotNull
 	private int rentCityId;
 	
 	@Positive
-	@NotBlank
+	@NotNull
 	private int returnCityId;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int carId;
 	
-	@NotBlank
+	@NotNull
 	@Positive
 	private int customerId;
 }

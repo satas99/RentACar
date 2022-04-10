@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateOrderedAdditionalServiceRequest {
-	
 	@Positive
     private int additionalServiceId;
 	

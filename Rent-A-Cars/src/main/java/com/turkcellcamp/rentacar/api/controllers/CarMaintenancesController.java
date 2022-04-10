@@ -58,7 +58,7 @@ public class CarMaintenancesController {
 	public DataResult<GetCarMaintenanceByIdDto> getById(@RequestParam("carMaintenanceId") @Valid int id){
 		return this.carMaintenanceService.getById(id);
 	}
-	@GetMapping("/getCarMaintenanceByCarId/{carId}")
+	@GetMapping("/getCarMaintenancesByCarId/{carId}")
 	DataResult<List<ListCarMaintenanceDto>> getCarMaintenanceByCarId(@RequestParam("carId") @Valid int id){
 		return this.carMaintenanceService.getCarMaintenanceByCarId(id);
 	}

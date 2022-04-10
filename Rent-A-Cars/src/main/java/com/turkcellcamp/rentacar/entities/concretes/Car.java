@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 @Table(name="cars")
 @Entity
 public class Car {
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="car_id")

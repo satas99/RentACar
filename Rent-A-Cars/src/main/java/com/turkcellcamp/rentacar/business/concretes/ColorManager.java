@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.turkcellcamp.rentacar.business.abstracts.CarService;
 import com.turkcellcamp.rentacar.business.abstracts.ColorService;
 import com.turkcellcamp.rentacar.business.constants.BusinessMessages;
 import com.turkcellcamp.rentacar.business.dtos.gets.GetColorByIdDto;
@@ -23,15 +24,15 @@ import com.turkcellcamp.rentacar.entities.concretes.Color;
 
 @Service
 public class ColorManager implements ColorService {
-
 	private ColorDao colorDao;
 	private ModelMapperService modelMapperService;
+	private CarService carService;
 
 	@Autowired
-	public ColorManager(ColorDao colorDao, ModelMapperService modelMapperService) {
-		
+	public ColorManager(ColorDao colorDao, ModelMapperService modelMapperService, CarService carService) {
 		this.colorDao = colorDao;
 		this.modelMapperService = modelMapperService;
+		this.carService = carService;
 	}
 
 	@Override
@@ -77,6 +78,8 @@ public class ColorManager implements ColorService {
 		
 		checkIfColorExists(id);
 		
+		checkIfThisColorIsUsedInAnotherTable(id);
+		
 		this.colorDao.deleteById(id);
 		
 		return new SuccessResult(BusinessMessages.COLORDELETED);
@@ -113,5 +116,12 @@ public class ColorManager implements ColorService {
 	private void updateOperation(Color color, UpdateColorRequest updateColorRequest) {
 		
 		color.setColorName(updateColorRequest.getColorName());
+	}
+	
+	private void checkIfThisColorIsUsedInAnotherTable(int id) {
+		
+		if(!this.carService.getByColor_ColorId(id).getData().isEmpty()) {
+			throw new BusinessException(BusinessMessages.COLORISUSEDINCARTABLE);
+		}
 	}
 }

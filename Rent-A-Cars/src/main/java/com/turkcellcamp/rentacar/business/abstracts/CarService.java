@@ -16,11 +16,15 @@ public interface CarService {
 
 	Result add(CreateCarRequest createCarRequest);
 
-	DataResult<GetCarByIdDto> getById(int carId);
+	DataResult<GetCarByIdDto> getById(int id);
 
 	Result update(int id, UpdateCarRequest updateCarRequest);
 
 	Result delete(int id);
+	
+	DataResult<List<ListCarDto>> getByColor_ColorId(int id);
+	
+	DataResult<List<ListCarDto>> getByBrand_BrandId(int id);
 
 	DataResult<List<GetCarByDailyPriceDto>> getCarByDailyPrice(double dailyPrice);
 

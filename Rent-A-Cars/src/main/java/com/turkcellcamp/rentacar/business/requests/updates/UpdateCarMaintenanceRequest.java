@@ -14,12 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateCarMaintenanceRequest {
-	
 	@NotBlank
 	@Size(min=1,max=200)
 	private String description;
 	
-	@NotBlank
+	@NotNull
 	private LocalDate returnDate;
 
 }

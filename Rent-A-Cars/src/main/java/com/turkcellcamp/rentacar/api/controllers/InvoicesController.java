@@ -61,8 +61,13 @@ public class InvoicesController {
 	DataResult<List<ListInvoiceDto>> getByDateOfBetween (@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate finishDate){
 		return this.invoiceService.getByDateOfBetween(startDate, finishDate);
 	}
-	@GetMapping("/getbycustomer")
-	DataResult<List<ListInvoiceDto>> getInvoiceByCustomer(@RequestParam int id) {
+	@GetMapping("/getInvoicesByCustomerId")
+	DataResult<List<ListInvoiceDto>> getInvoiceByCustomer(@RequestParam("customerId") int id) {
 		return this.invoiceService.getInvoiceByCustomer(id);
+	}
+	
+	@GetMapping("/getInvoicesByRentalCarId")
+	public DataResult<List<ListInvoiceDto>> getInvoiceByRentalCar(@RequestParam("rentalCarId") int id){
+		return this.invoiceService.getInvoiceByRentalCar(id);
 	}
 }

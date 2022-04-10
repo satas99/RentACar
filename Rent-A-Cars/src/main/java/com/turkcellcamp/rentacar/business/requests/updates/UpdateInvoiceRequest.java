@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateInvoiceRequest {
-
 	private LocalDate createDate;
 
 }
